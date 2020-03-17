@@ -1,7 +1,7 @@
 ---
 - name: Install dci hooks
   template:
-    src: "hooks/{{ item }}"
+    src: "hooks/{{ item }}.j2"
     dest: "{{ dci_agent_hooks_location }}/{{ item }}"
     mode: '0644'
     owner: "root"

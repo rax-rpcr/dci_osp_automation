@@ -1,0 +1,31 @@
+---
+# The dci user already has access to the undercloud vm.  
+# Just using the same keys here.
+
+- name: Create the dci agent .ssh dir
+  file:
+    path: "{{ dci_agent_homedir }}/.ssh"
+    owner: "{{ dci_agent_user }}"
+    group: "{{ dci_agent_group }}"
+    mode: '0700'
+    state: directory
+
+- name: Copy the dci ssh pub key to the agent
+  copy:
+    src: "/home/dci/.ssh/id_rsa.pub"
+    dest: "{{ dci_agent_homedir }}/.ssh/id_rsa.pub"
+    owner: "{{ dci_agent_user }}"
+    group: "{{ dci_agent_group }}"
+    remote_src: yes
+    mode: '0644'
+
+- name: Copy the dci ssh private key to the agent
+  copy:
+    src: "/home/dci/.ssh/id_rsa"
+    dest: "{{ dci_agent_homedir }}/.ssh/id_rsa"
+    owner: "{{ dci_agent_user }}"
+    group: "{{ dci_agent_group }}"
+    remote_src: yes
+    mode: '0600'
+
+

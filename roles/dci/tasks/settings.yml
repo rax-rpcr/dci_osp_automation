@@ -1,0 +1,9 @@
+---
+- name: Install the settings.yml
+  template:
+    src: "settings.yml.j2"
+    dest: "{{ dci_agent_config_location }}/settings.yml"
+    mode: '0644'
+    owner: "root"
+    group: "root"
+

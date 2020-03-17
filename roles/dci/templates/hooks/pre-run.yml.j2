@@ -14,7 +14,7 @@
     state: 'absent'
   become: True
 
-- Name: Pull down the latest repo
+- name: Pull down the latest repo
   git:
     repo: "{{ dci_automation_repo }}"
     dest: "{{ dci_automation_repo_full }}"

@@ -1,0 +1,6 @@
+---
+- name: Deploy the overcloud  from the undercloud vm
+  hosts: undercloud
+  tasks:
+    - name: Check undercloud connectivity
+      ping:
