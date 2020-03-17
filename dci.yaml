@@ -1,0 +1,6 @@
+---
+- name: Add automation repo into the dci hooks
+  hosts: 'dci'
+  roles:
+    - dci
+

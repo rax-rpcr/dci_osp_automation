@@ -1,0 +1,16 @@
+
+# This repo
+dci_automation_repo_short: "dci_osp_automation"
+dci_automation_repo: "https://github.com/rax-rpcr/{{ dci_automation_repo_short}}.git"
+dci_automation_repo_version: "master"
+
+# Repo base
+dci_automation_repo_base: "/var/lib/dci-ansible-agent/repos"
+dci_automation_repo_full: "{{ dci_automation_repo_base }}/{{ dci_automation_repo_short }}/"
+
+# DCI agent perms
+dci_agent_user: dci-openstack-agent
+dci_agent_group: dci-openstack-agent
+
+# Hooks location
+dci_agent_hooks_location: "/etc/dci-openstack-agent/hooks"

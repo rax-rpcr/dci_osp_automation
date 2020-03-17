@@ -1,0 +1,22 @@
+---
+
+- name: Make sure the repos dir exists
+  file:
+    path: '{{ dci_automation_repo_base }}'
+    state: 'directory'
+    owner: '{{ dci_agent_user }}'
+    group: '{{ dci_agent_group }}'
+  become: True
+
+- name: Clean out the existing repo
+  file:
+    path: '{{ dci_automation_repo_full }}'
+    state: 'absent'
+  become: True
+
+- Name: Pull down the latest repo
+  git:
+    repo: "{{ dci_automation_repo }}"
+    dest: "{{ dci_automation_repo_full }}"
+    version: "{{ dci_automation_repo_version }}"
+

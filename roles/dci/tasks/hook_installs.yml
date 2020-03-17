@@ -1,0 +1,11 @@
+---
+- name: Install dci hooks
+  template:
+    src: "hooks/{{ item }}"
+    dest: "{{ dci_agent_hooks_location }}/{{ item }}"
+    mode: '0644'
+    owner: "root"
+    group: "root"
+  with_items:
+    - "pre-run.yml"
+    - "running.yml"
