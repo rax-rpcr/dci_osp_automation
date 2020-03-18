@@ -9,6 +9,8 @@
     group: "{{ dci_agent_group }}"
     mode: '0700'
     state: directory
+  tags:
+    - config_ssh
 
 - name: Copy the dci ssh pub key to the agent
   copy:
@@ -18,6 +20,8 @@
     group: "{{ dci_agent_group }}"
     remote_src: yes
     mode: '0644'
+  tags:
+    - config_ssh
 
 - name: Copy the dci ssh private key to the agent
   copy:
@@ -27,5 +31,7 @@
     group: "{{ dci_agent_group }}"
     remote_src: yes
     mode: '0600'
+  tags:
+    - config_ssh
 
 

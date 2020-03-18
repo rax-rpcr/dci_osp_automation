@@ -12,3 +12,6 @@
 
 # Create the settings file
 - include: settings.yml
+
+# Configure eth1 with the provisioning network ip.
+- include: network.yml

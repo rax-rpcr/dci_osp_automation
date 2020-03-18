@@ -1,0 +1,6 @@
+---
+##############################################################
+# Environment variables not currently provided by theforeman
+##############################################################
+
+ironic_provisioning_network: "192.168.201.0/24"

@@ -9,3 +9,5 @@
   with_items:
     - "pre-run.yml"
     - "running.yml"
+  tags:
+    - config_hooks

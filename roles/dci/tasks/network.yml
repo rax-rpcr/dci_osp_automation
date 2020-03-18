@@ -1,0 +1,25 @@
+---
+- name: Get the mac address of eth1
+  shell: ip link show eth1 | awk '/link\/ether/{print $2}'
+  register: nicchk
+  tags:
+    - config_network
+
+- name: Configure /etc/sysconfig/network-scripts/ifcfg-eth1
+  template:
+    src: "ifcfg-eth1.j2"
+    dest: "/etc/sysconfig/network-scripts/ifcfg-eth1"
+    mode: '0644'
+    owner: "root"
+    group: "root"
+  tags:
+    - config_network
+
+- name: Bring the interface up if needed
+  shell: |
+    ip link show dev eth1 | grep "{{ dci_ironic_provisioning_ip }}"
+    if [ $? != 0 ]; then
+      ifup eth1
+    fi
+  tags:
+    - config_network

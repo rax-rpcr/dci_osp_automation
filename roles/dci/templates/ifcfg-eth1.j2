@@ -1,0 +1,8 @@
+DEVICE=eth1
+BOOTPROTO=none
+ONBOOT=yes
+TYPE=Ethernet
+USERCTL=no
+IPADDR="{{ dci_ironic_provisioning_ip }}"
+PREFIX="{{ dci_ironic_provisioning_prefix }}"
+HWADDR="{{ nicchk.stdout }}"
