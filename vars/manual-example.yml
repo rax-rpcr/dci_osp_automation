@@ -3,4 +3,10 @@
 # Environment variables not currently provided by theforeman
 ##############################################################
 
+# Made up (and availble) ironic provisioning network.
 ironic_provisioning_network: "192.168.201.0/24"
+
+# Used to create an eth1.1234 vlan interface on the undercloud box for ipmi comms.
+ipmi_vlan: 1234
+ipmi_network_cidr: 172.20.8.0/22
+undercloud_ipmi_ip: 172.20.9.100

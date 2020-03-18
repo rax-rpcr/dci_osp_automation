@@ -26,5 +26,9 @@ Outputs:
 * /home/dci/.ssh/id_rsa* copyied to /var/lib/dci-openstack-agent/.ssh/ (tag: config_ssh)
 * /etc/sysconfig/network-scripts/ifcfg-eth1 configured  (tag: config_network)
 
+Example:
 
+```
+ansible-playbook -i inventory/lab.yml dci.yaml  -b -e @vars/OSP16-example.yml -e @vars/manual-example.yml
+```
 

@@ -1,6 +1,6 @@
 [undercloud]
 
-directorvm ansible_ssh_host=directorvm ansible_ssh_user=stack 
+undercloud ansible_ssh_host=undercloud ansible_ssh_user=stack 
 
 [dci]
 

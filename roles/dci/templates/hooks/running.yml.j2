@@ -25,13 +25,13 @@
 
   - name: configure the undercloud host and start the undercloud
     shell: |
-      ansible-playbook undercloud.yaml -e @/etc/dci-openstack-agent/settings.yml
+      ansible-playbook undercloud.yaml {{ extra_vars_files }}
     args:
       chdir: '{{ dci_automation_repo_full }}' 
 
   - name: Overcloud deployment
     shell: |
-      ansible-playbook overcloud.yaml -e @/etc/dci-openstack-agent/settings.yml
+      ansible-playbook overcloud.yaml {{ extra_vars_files }}
     args:
       chdir: '{{ dci_automation_repo_full }}' 
 

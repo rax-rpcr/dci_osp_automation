@@ -16,3 +16,6 @@ dci_agent_group: dci-openstack-agent
 # Hooks location
 dci_agent_config_location: "/etc/dci-openstack-agent" 
 dci_agent_hooks_location: "{{ dci_agent_config_location }}/hooks"
+
+# This will be dynamically populated
+extra_vars_files: ""

@@ -1,4 +1,22 @@
 ---
+- name: Get a listing of yml files in /etc/dci-openstack-agent to use for ansible vars files
+  find:
+    paths: "{{ dci_agent_config_location }}/"
+    patterns: "^.*(yml|yaml)"
+    use_regex: yes
+    recurse: no
+  register: varfilechk
+  tags:
+    - config_hooks
+
+- name: Set extra_vars_files fact
+  set_fact:
+    extra_vars_files: "{{ extra_vars_files }} -e @{{ item.path }}"
+  with_items:
+    - '{{ varfilechk.files }}'
+  tags:
+    - config_hooks
+  
 - name: Install dci hooks
   template:
     src: "hooks/{{ item }}.j2"

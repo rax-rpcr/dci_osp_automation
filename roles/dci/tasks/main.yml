@@ -1,17 +1,16 @@
 ---
 
-# Set up all of the dci hooks
-- include: hook_installs.yml
-
 # The setup in these dynamic environments already allows
 # the dci user access to the undercloud. It also has access
 # to the hype for resetting the undercloud vm. We are copying
 # the keys over to the dci agent user.
 - include: dci_agent_ssh.yml
 
-
 # Create the settings file
 - include: settings.yml
+
+# Set up all of the dci hooks
+- include: hook_installs.yml
 
 # Configure eth1 with the provisioning network ip.
 - include: network.yml
