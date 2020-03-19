@@ -3,6 +3,7 @@
 # enable/disable vars
 enable_ceph: true
 enable_self_signed_certs: true
+enable_pci: true
 
 
 
@@ -16,3 +17,12 @@ ssl_ST: "Texas"
 ssl_L: "San Antonio"
 ssl_O: "RPC-R"
 ssl_CN_prefix: "ca"
+
+undercloud_hiera_overrides_file: "heira-overrides.yaml"
+
+
+# undercloud.conf defaults
+undercloud_local_interface: "eth1"
+undercloud_local_mtu: "1500"
+undercloud_nameservers: "69.20.0.164,69.20.0.196"
+undercloud_ntp_servers: "69.20.0.164,69.20.0.196"

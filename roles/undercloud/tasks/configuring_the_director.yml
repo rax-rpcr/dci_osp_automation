@@ -1,2 +1,8 @@
 ---
+- name: Configure the /home/stack/undercloud.conf
+  template:
+    src: "undercloud.conf.j2"
+    dest: "/home/stack/undercloud.conf"
+  tags:
+    - config_undercloud
 

@@ -19,6 +19,8 @@
 - include: setup_ssl_certs.yml
 
 
+# PCI hardening related configuration
+- include: pci_config.yml
 
 # Steps below followed from https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.0/html/director_installation_and_usage/installing-the-undercloud
 

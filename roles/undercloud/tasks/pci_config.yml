@@ -1,0 +1,9 @@
+---
+- name: Create undercloud hiera overrides file for pci settings
+  copy:
+    src: "{{ undercloud_hiera_overrides_file }}"
+    dest: "/home/stack/{{ undercloud_hiera_overrides_file }}"
+  when: enable_pci
+  tags:
+    - pci_config
+

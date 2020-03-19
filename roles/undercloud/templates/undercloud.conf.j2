@@ -1,0 +1,48 @@
+[DEFAULT]
+ 
+clean_nodes = True
+container_cli = podman
+container_images_file = /home/stack/containers-prepare-parameter.yaml
+discovery_default_driver = ipmi
+enable_tempest = true
+enabled_hardware_types = ipmi
+{% if enable_pci -%}
+hieradata_override = /home/stack/{{ undercloud_hiera_overrides_file }}
+{% endif %}
+inspection_interface = br-ctlplane
+ipxe_enabled = true
+ 
+local_interface = {{ undercloud_local_interface }}
+local_ip = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1/{{ ironic_provisioning_network.split('/')[1] }}
+local_mtu = {{ undercloud_local_mtu }}
+local_subnet = ctlplane-subnet
+ 
+overcloud_domain_name = {{ domain_name }}
+ 
+subnets = ctlplane-subnet
+ 
+undercloud_admin_host = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.3
+undercloud_debug = true
+undercloud_enable_selinux = true
+undercloud_hostname = {{ ansible_fqdn }}
+undercloud_nameservers = {{ undercloud_nameservers }}
+undercloud_ntp_servers = {{ undercloud_ntp_servers }}
+undercloud_public_host = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.2
+{% if enable_self_signed_certs %}
+undercloud_service_certificate = {{ haproxy_ssl_cert }}
+generate_service_certificate = false
+{% endif %}
+
+undercloud_timezone = UTC
+undercloud_update_packages = false
+ 
+ 
+[ctlplane-subnet]
+ 
+cidr = {{ ironic_provisioning_network }}
+dhcp_start = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.5
+dhcp_end = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.24
+dns_nameservers = {{ undercloud_nameservers }}
+gateway = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1
+inspection_iprange = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.100,{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.120
+masquerade = true

@@ -1,0 +1,2 @@
+# PCI-DSS 4.1: Use strong cryptography and security
+tripleo::haproxy::ssl_options: no-sslv3 no-tlsv10 no-tlsv11
