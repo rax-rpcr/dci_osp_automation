@@ -1,0 +1,10 @@
+DEVICE=eth1.{{ internal_vlan }}
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR="{{ internal_network_cidr.split('.')[0:3] | join('.') }}.20"
+# Just using this fake gw for the lab as these
+# networks are not configured on the router
+IPADDR0="{{ internal_network_cidr.split('.')[0:3] | join('.') }}.1"
+PREFIX="{{ internal_network_cidr.split('/')[1] }}"
+NM_CONTROLLED=no
+VLAN=yes

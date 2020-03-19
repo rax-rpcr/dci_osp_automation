@@ -1,7 +1,6 @@
 ---
 - name: Configure the undercloud vm
   hosts: undercloud
-  tasks:
-    - name: Check undercloud connectivity
-      ping:
+  roles:
+    - undercloud
 

@@ -1,0 +1,133 @@
+---
+- name: Enable ip forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: True
+  tags:
+    - config_network
+
+- name: Disable NetworkManager
+  systemd:
+    name: NetworkManager
+    enabled: no
+    state: stopped
+  become: True
+  tags:
+    - config_network
+
+- name: Enable the network service
+  systemd:
+    name: network
+    enabled: yes
+    state: started
+  become: True
+  tags:
+    - config_network
+
+- name: Disable warnings
+  file:
+    state: touch
+    path: "/etc/sysconfig/disable-deprecation-warnings"
+  become: True
+  tags:
+    - config_network
+
+- name: Get the mac address of eth1
+  shell: ip link show eth1 | awk '/link\/ether/{print $2}'
+  register: nicchk
+  become: True
+  tags:
+    - config_network
+
+- name: Configure /etc/sysconfig/network-scripts/ifcfg-eth1
+  template:
+    src: "network-scripts/ifcfg-eth1.j2"
+    dest: "/etc/sysconfig/network-scripts/ifcfg-eth1"
+    mode: '0644'
+    owner: "root"
+    group: "root"
+  become: True
+  tags:
+    - config_network
+
+
+- name: Bring the interface up if needed
+  shell: |
+    ip -d link show dev eth1 | grep 'state UP'
+    if [ $? != 0 ]; then
+      ifup eth1
+    fi
+  become: True
+  tags:
+    - config_network
+
+
+- name: Set up vlan interface for the internal network
+  template:
+    src: "network-scripts/ifcfg-internal.j2"
+    dest: "/etc/sysconfig/network-scripts/ifcfg-eth1.{{ internal_vlan }}"
+    mode: '0644'
+    owner: "root"
+    group: "root"
+  become: True
+  tags:
+    - config_network
+  
+- name: Bring the internal vlan interface up if needed
+  shell: |
+    ip -d link show dev eth1 | grep "{{ internal_network_cidr.split('.')[0:3] | join('.') }}.20"
+    if [ $? != 0 ]; then
+      ifup eth1.{{ internal_vlan }}
+    fi
+  become: True
+  tags:
+    - config_network
+
+- name: Set up vlan interface for the neutron gateway network
+  template:
+    src: "network-scripts/ifcfg-gateway.j2"
+    dest: "/etc/sysconfig/network-scripts/ifcfg-eth1.{{ gw_net_vlan }}"
+    mode: '0644'
+    owner: "root"
+    group: "root"
+  become: True
+  tags:
+    - config_network
+  
+- name: Bring the neutron gateway vlan interface up if needed
+  shell: |
+    ip -d link show dev eth1 | grep "{{ gw_net_network_cidr.split('.')[0:3] | join('.') }}.20"
+    if [ $? != 0 ]; then
+      ifup eth1.{{ gw_net_vlan }}
+    fi
+  become: True
+  tags:
+    - config_network
+
+- name: Set up vlan interface for the ipmi network
+  template:
+    src: "network-scripts/ifcfg-ipmi.j2"
+    dest: "/etc/sysconfig/network-scripts/ifcfg-eth1.{{ ipmi_vlan }}"
+    mode: '0644'
+    owner: "root"
+    group: "root"
+  become: True
+  tags:
+    - config_network
+  
+- name: Bring the ipmi vlan interface up if needed
+  shell: |
+    ip -d link show dev eth1 | grep "{{ undercloud_ipmi_ip }}"
+    if [ $? != 0 ]; then
+      ifup eth1.{{ ipmi_vlan }}
+    fi
+  become: True
+  tags:
+    - config_network
+
+
+

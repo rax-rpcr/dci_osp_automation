@@ -1,0 +1,10 @@
+---
+- name: Prepare container images
+  shell: |
+    openstack tripleo container image prepare default \
+      --local-push-destination \
+      --output-env-file /home/stack/containers-prepare-parameter.yaml
+  args:
+    creates: /home/stack/containers-prepare-parameter.yaml
+  tags:
+    - prepare_container_images

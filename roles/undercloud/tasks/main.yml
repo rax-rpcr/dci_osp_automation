@@ -1,1 +1,25 @@
 ---
+# Redhat docs skimp on the network config
+
+- include: network_config.yml
+
+
+
+# Steps followed from: https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.0/html/director_installation_and_usage/preparing-for-director-installation
+
+- include: preparing_the_undercloud.yml
+
+- include: install_ceph_ansible.yml
+
+- include: preparing_container_images.yml
+
+
+# Redhat docs don't cover the ssl cert generation
+
+- include: setup_ssl_certs.yml
+
+
+
+# Steps below followed from https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.0/html/director_installation_and_usage/installing-the-undercloud
+
+- include: configuring_the_director.yml

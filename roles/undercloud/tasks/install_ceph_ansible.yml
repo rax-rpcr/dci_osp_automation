@@ -1,0 +1,20 @@
+---
+
+- name: enable rhceph-4-tools-for-rhel-8-x86_64-rpms repo
+  rhsm_repository:
+    name: rhceph-4-tools-for-rhel-8-x86_64-rpms
+    state: enabled
+  become: True
+  when: enable_ceph
+  tags:
+    - install_ceph_ansible
+
+- name: Install ceph-ansible package
+  dnf:
+    name: ceph-ansible
+    state: present
+  become: True
+  when: enable_ceph
+  tags:
+    - install_ceph_ansible
+

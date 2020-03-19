@@ -1,0 +1,130 @@
+---
+
+- name: Create a working ssl directory
+  file:
+    path: "{{ ssl_working_dir }}"
+    state: directory
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+- name: Generate the director CA key
+  shell: openssl genrsa -out director-ca.key 2048
+  args:
+    chdir: "{{ ssl_working_dir }}" 
+    creates: "{{ ssl_working_dir }}/director-ca.key"
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+- name: Generate the director CA certificate
+  shell: |
+    openssl req -x509 -new -nodes -key director-ca.key \
+      -days 3650 -out director-ca.crt \
+      -subj "/C={{ ssl_C }}/ST={{ ssl_ST }}/L={{ ssl_L }}/O={{ ssl_O }}/CN={{ ssl_CN_prefix}}.{{ ansible_fqdn }}"
+  args:
+    chdir: "{{ ssl_working_dir }}" 
+    creates: "{{ ssl_working_dir }}/director-ca.crt"
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+
+- name: Generate the undercloud services ssl key
+  shell: openssl genrsa -out {{ ansible_fqdn }}.key 2048
+  args:
+    chdir: "{{ ssl_working_dir }}" 
+    creates: "{{ ssl_working_dir }}/{{ ansible_fqdn }}.key"
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+
+- name: Generate the undercloud services ssl certificate request
+  shell: |
+    openssl req -new -sha256 -key {{ ansible_fqdn }}.key -out {{ ansible_fqdn }}.csr \
+      -subj "/C={{ ssl_C }}/ST={{ ssl_ST }}/L={{ ssl_L }}/O={{ ssl_O }}/CN={{ ansible_fqdn }}"
+  args:
+    chdir: "{{ ssl_working_dir }}" 
+    creates: "{{ ssl_working_dir }}/{{ ansible_fqdn }}.csr"
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+- name: Set network fact from 'ironic_provisioning_network' for subject alt names
+  set_fact:
+    sanip_pre: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}"
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+- name: Generate the undercloud services ssl certificate
+  shell: |
+    echo 'subjectAltName=DNS:{{ ansible_fqdn }},IP:{{ sanip_pre }}.1,IP:{{ sanip_pre }}.2,IP:{{ sanip_pre }}.3' > /tmp/san.txt
+    openssl x509 -req -in {{ ansible_fqdn }}.csr \
+      -CA director-ca.crt -CAkey director-ca.key \
+      -CAcreateserial -out {{ ansible_fqdn }}.crt \
+      -extfile /tmp/san.txt
+    rm -f /tmp/san.txt
+  args:
+    chdir: "{{ ssl_working_dir }}" 
+    creates: "{{ ssl_working_dir }}/{{ ansible_fqdn }}.cst"
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+- name: Copy cert over for haproxy use
+  file:
+    state: directory
+    path: "{{ haproxy_ssl_dir }}"
+    owner: "root"
+    group: "stack"
+    mode: '0750'
+  when: enable_self_signed_certs
+  become: True
+  tags:
+    - setup_ssl_certs
+
+- name: Concat the crt and key for haproxy use
+  shell: cat {{ ansible_fqdn }}.crt {{ ansible_fqdn }}.key | sudo tee {{ haproxy_ssl_cert }}
+  args:
+    chdir: "{{ ssl_working_dir }}" 
+    creates: "{{ haproxy_ssl_cert }}"
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+- name: Set up an selinux rule for the haproxy ssl dir
+  sefcontext:
+    target: '/etc/pki/instack-certs(/.*)?'
+    setype: etc_t
+    state: present
+  become: True
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+- name: Run a restorcon on the haproxy ssl dir
+  shell: restorecon -vvRF {{ haproxy_ssl_dir }}
+  become: True
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+
+- name: Set up the system to trust the ca certificate
+  copy:
+    src: "{{ ssl_working_dir }}/director-ca.crt"
+    dest: "/etc/pki/ca-trust/source/anchors/"
+    remote_src: yes
+  become: True
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+- name: Run update-ca-trust extract
+  shell: update-ca-trust extract
+  become: True
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs

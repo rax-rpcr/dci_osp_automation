@@ -1,0 +1,58 @@
+---
+
+# Skipping stack user setup done via cloud-init
+
+- name: Create directories for system images and heat templates
+  file:
+    state: directory
+    path: "/home/stack/{{ item }}"
+  with_items:
+    - images
+    - templates
+  tags:
+    - undercloud_prep
+
+
+# Skipping hostname setup done via cloud-init
+
+- name: Add entry into /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    regexp: "^{{ undercloud_ip }}"
+    line: "{{ undercloud_ip }} directorvm.{{ domain_name }} directorvm"
+  become: True
+  tags:
+    - undercloud_prep
+
+# Skipping registration done via cloud-init
+
+- name: Update and reboot if needed.
+  dnf:
+    name: "*"
+    state: latest
+    update_cache: yes
+  register: systemupdate
+  become: True
+  tags:
+    - undercloud_prep
+
+- name: Reboot if an update was applied
+  reboot:
+    reboot_timeout: 3600
+  when: systemupdate.changed
+  become: True
+  tags:
+    - undercloud_prep
+
+
+- name: Install python3-tripleoclient package
+  dnf:
+    name: python3-tripleoclient
+    update_cache: yes
+    state: present
+  become: True
+  tags:
+    - undercloud_prep
+
+
+

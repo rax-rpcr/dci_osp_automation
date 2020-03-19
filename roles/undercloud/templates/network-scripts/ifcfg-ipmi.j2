@@ -1,0 +1,7 @@
+DEVICE=eth1.{{ ipmi_vlan }}
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR="{{ undercloud_ipmi_ip }}"
+PREFIX="{{ ipmi_network_cidr.split('/')[1] }}"
+NM_CONTROLLED=no
+VLAN=yes

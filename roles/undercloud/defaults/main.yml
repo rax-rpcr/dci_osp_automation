@@ -1,0 +1,18 @@
+---
+
+# enable/disable vars
+enable_ceph: true
+enable_self_signed_certs: true
+
+
+
+
+# default vars
+haproxy_ssl_dir: "/etc/pki/instack-certs"
+haproxy_ssl_cert: "{{ haproxy_ssl_dir }}/undercloud.pem"
+ssl_working_dir: "/home/stack/sslfiles"
+ssl_C: "US"
+ssl_ST: "Texas"
+ssl_L: "San Antonio"
+ssl_O: "RPC-R"
+ssl_CN_prefix: "ca"
