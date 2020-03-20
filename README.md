@@ -20,11 +20,15 @@ Input vars:
 * dci_ironic_provisioning_prefix: "24"
 
 Outputs:
-* /etc/dci-openstack-agent/settings.yml (tag: config_settings)
-* /etc/dci-openstack-agent/hooks/pre-run.yml (tag: config_hooks)
-* /etc/dci-openstack-agent/hooks/running.yml (tag: config_hooks)
-* /home/dci/.ssh/id_rsa* copyied to /var/lib/dci-openstack-agent/.ssh/ (tag: config_ssh)
-* /etc/sysconfig/network-scripts/ifcfg-eth1 configured  (tag: config_network)
+
+Tag | Outputs
+--- | -------
+config_settings | Generates /etc/dci-openstack-agent/settings.yml
+config_hooks | Generates /etc/dci-openstack-agent/hooks/pre-run.yml
+config_hooks | Generates /etc/dci-openstack-agent/hooks/running.yml
+config_ssh | /home/dci/.ssh/id_rsa* copyied to /var/lib/dci-openstack-agent/.ssh/
+config_network | Generates /etc/sysconfig/network-scripts/ifcfg-eth1
+
 
 Example:
 
