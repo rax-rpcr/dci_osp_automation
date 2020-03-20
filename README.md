@@ -14,10 +14,13 @@ Requirements:
 * Native vlan on br-trunk is the ironic provisioning network all other vlans are trunked.
 
 Input vars:
-* dci_topic: "OSP16"
-* undercloud_ip: "192.168.122.210"
-* dci_ironic_provisioning_ip: "192.168.201.4"
-* dci_ironic_provisioning_prefix: "24"
+
+Variable | Description
+-------- | -----------
+dci_topic | "OSP16" is the only thing currently tested
+undercloud_ip | Ip of the undercloud node. ex: "192.168.122.210"
+dci_ironic_provisioning_ip | DCI prov net ip. 1,2,3 are taken by the undercloud. ex: "192.168.201.4"
+dci_ironic_provisioning_prefix |  Network prefix to be used for the prov ip above. ex: "24"
 
 Outputs:
 
