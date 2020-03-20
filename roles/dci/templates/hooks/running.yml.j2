@@ -1,8 +1,8 @@
 ---
 - block:
-  - name: redeployment of directoryvm
+  - name: rollback of directorvm
     shell: |
-      ssh -t dci@192.168.122.1 'sudo /usr/bin/virsh snapshot-revert directorvm.$(hostname -d) directorvm_revert_snap'
+      ssh -t -t -o StrictHostKeyChecking=no dci@192.168.122.1 sudo /usr/bin/virsh snapshot-revert directorvm.$(hostname -d) directorvm_revert_snap
 
   - name: Add undercloud to inventory
     add_host:
@@ -11,10 +11,11 @@
       ansible_user: "stack"
       ansible_host: "{{ '{{' }} undercloud_ip {{ '}}' }}"
 
-  - name: Test the connectivity to the undercloud
-    ping:
+  - name: Wait for connectivity
+    wait_for_connection: 
+      delay: 10
+      timeout: 300
     delegate_to: undercloud
-    
 
   - name: Set up host to use local repo
     copy:
@@ -25,13 +26,13 @@
 
   - name: configure the undercloud host and start the undercloud
     shell: |
-      ansible-playbook undercloud.yaml {{ extra_vars_files }}
+      ansible-playbook undercloud.yaml -i inventory/lab.yml {{ extra_vars_files }}
     args:
       chdir: '{{ dci_automation_repo_full }}' 
 
   - name: Overcloud deployment
     shell: |
-      ansible-playbook overcloud.yaml {{ extra_vars_files }}
+      ansible-playbook overcloud.yaml -i inventory/lab.yml {{ extra_vars_files }}
     args:
       chdir: '{{ dci_automation_repo_full }}' 
 
