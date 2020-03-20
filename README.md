@@ -2,6 +2,7 @@
 
 Some generic osp automation scripting to work with Rehat DCI.
 
+------
 
 ## dci.yaml playbook
 
@@ -40,6 +41,7 @@ ansible-playbook -i inventory/lab.yml dci.yaml  -b -e @vars/OSP16-example.yml -e
 ```
 
 
+------
 
 ## undercloud.yml playbook
 
