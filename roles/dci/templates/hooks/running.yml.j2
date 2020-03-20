@@ -26,13 +26,13 @@
 
   - name: configure the undercloud host and start the undercloud
     shell: |
-      ansible-playbook undercloud.yaml -i inventory/lab.yml {{ extra_vars_files }}
+      stdbuf -i0 -e0 -o0 ansible-playbook undercloud.yaml -i inventory/lab.yml {{ extra_vars_files }} | tee undercloud-play.log
     args:
       chdir: '{{ dci_automation_repo_full }}' 
 
   - name: Overcloud deployment
     shell: |
-      ansible-playbook overcloud.yaml -i inventory/lab.yml {{ extra_vars_files }}
+      stdbuf -i0 -e0 -o0 ansible-playbook overcloud.yaml -i inventory/lab.yml {{ extra_vars_files }} | tee overcloud-play.log
     args:
       chdir: '{{ dci_automation_repo_full }}' 
 
