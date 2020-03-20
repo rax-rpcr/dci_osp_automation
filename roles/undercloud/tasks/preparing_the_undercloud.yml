@@ -15,11 +15,12 @@
 
 # Skipping hostname setup done via cloud-init
 
-- name: Add entry into /etc/hosts
+
+- name: Add entry into /etc/hosts (must match pub api ip of undercloud)
   lineinfile:
     path: /etc/hosts
-    regexp: "^{{ undercloud_ip }}"
-    line: "{{ undercloud_ip }} directorvm.{{ domain_name }} directorvm"
+    regexp: "^{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1"
+    line: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1 directorvm.{{ domain_name }} directorvm"
   become: True
   tags:
     - undercloud_prep

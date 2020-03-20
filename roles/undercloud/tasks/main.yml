@@ -25,3 +25,5 @@
 # Steps below followed from https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.0/html/director_installation_and_usage/installing-the-undercloud
 
 - include: configuring_the_director.yml
+
+- include: openstack_undercloud_install.yml

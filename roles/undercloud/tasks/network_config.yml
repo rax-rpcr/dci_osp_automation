@@ -1,4 +1,27 @@
 ---
+- name: Clean up the registery just in case
+  shell: |
+    # clean old cruft
+    dnf clean all
+
+    # prime subscription manager after a rollback
+    # fails on a repolist without this
+    subscription-manager repos --list-enabled
+  become: True
+  tags:
+    - config_network
+
+- name: Install packages needed to roll back NetworkManager
+  dnf:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - network-scripts
+    - network-scripts-team
+  become: True
+  tags:
+    - config_network
+
 - name: Enable ip forwarding
   sysctl:
     name: net.ipv4.ip_forward

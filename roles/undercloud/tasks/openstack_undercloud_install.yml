@@ -1,0 +1,5 @@
+---
+- name: Run the 'openstack undercloud install' command as stack
+  shell: openstack undercloud install
+  tags:
+    - install_undercloud

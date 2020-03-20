@@ -6,5 +6,4 @@ IPADDR="{{ internal_network_cidr.split('.')[0:3] | join('.') }}.20"
 # networks are not configured on the router
 IPADDR0="{{ internal_network_cidr.split('.')[0:3] | join('.') }}.1"
 PREFIX="{{ internal_network_cidr.split('/')[1] }}"
-NM_CONTROLLED=no
 VLAN=yes

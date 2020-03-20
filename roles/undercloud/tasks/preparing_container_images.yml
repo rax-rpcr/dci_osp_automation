@@ -1,4 +1,15 @@
 ---
+- name: Create an environment file with repo credentials
+  template:
+    src: "container_overrides.yaml.j2"
+    dest: "/home/stack/templates/container_overrides.yaml"
+    owner: "stack"
+    group: "stack"
+    mode: '0400'
+  tags:
+    - prepare_container_images
+
+
 - name: Prepare container images
   shell: |
     openstack tripleo container image prepare default \

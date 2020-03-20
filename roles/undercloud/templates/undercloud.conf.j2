@@ -11,6 +11,8 @@ hieradata_override = /home/stack/{{ undercloud_hiera_overrides_file }}
 {% endif %}
 inspection_interface = br-ctlplane
 ipxe_enabled = true
+
+custom_env_files = /home/stack/templates/container_overrides.yaml
  
 local_interface = {{ undercloud_local_interface }}
 local_ip = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1/{{ ironic_provisioning_network.split('/')[1] }}
@@ -36,6 +38,7 @@ generate_service_certificate = false
 undercloud_timezone = UTC
 undercloud_update_packages = false
  
+container_healthcheck_disabled = false
  
 [ctlplane-subnet]
  

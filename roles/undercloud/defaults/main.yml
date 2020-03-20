@@ -4,6 +4,7 @@
 enable_ceph: true
 enable_self_signed_certs: true
 enable_pci: true
+enable_dci_image_repo: true
 
 
 

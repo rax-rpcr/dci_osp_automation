@@ -1,8 +1,8 @@
 ---
 - block:
-#  - name: redeployment of directoryvm
-#    shell: |
-#      ssh dci@192.168.122.1 'rollback.sh -y -n directorvm'
+  - name: redeployment of directoryvm
+    shell: |
+      ssh -t dci@192.168.122.1 'sudo /usr/bin/virsh snapshot-revert directorvm.$(hostname -d) directorvm_revert_snap'
 
   - name: Add undercloud to inventory
     add_host:

@@ -10,3 +10,9 @@ ironic_provisioning_network: "192.168.201.0/24"
 ipmi_vlan: 1234
 ipmi_network_cidr: 172.20.8.0/22
 undercloud_ipmi_ip: 172.20.9.100
+
+
+# For image pulls
+rhsm_user: <removed>
+rhsm_pass: <removed>
+rhsm_pool: <removed>
