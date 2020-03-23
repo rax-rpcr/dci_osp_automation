@@ -1,0 +1,21 @@
+---
+
+
+network_service_rpms:
+  - network-scripts
+  - network-scripts-team
+
+
+tripleoclient_pkg_name: python3-tripleoclient
+
+ceph_tools_repo: "rhceph-4-tools-for-rhel-8-x86_64-rpms"
+ceph_ansible_pkg_name: "ceph-ansible"
+
+overcloud_image_pkg_names:
+  - rhosp-director-images
+  - rhosp-director-images-ipa
+
+overcloud_glance_image_files:
+  - /usr/share/rhosp-director-images/overcloud-full-latest-16.0.tar
+  - /usr/share/rhosp-director-images/ironic-python-agent-latest-16.0.tar
+

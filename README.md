@@ -53,6 +53,7 @@ Configure and install the undercloud on the director vm
 
 Variable | Description
 -------- | -----------
+dci_version | Used to pull vars/ospXX.yml for osp version specific vars.
 internal_network_cidr | cidr of the overcloud internal network
 internal_vlan | vlan of the overcloud internal network
 gw_net_network_cidr | cidr of the overcloud neutron gateway network
@@ -93,6 +94,7 @@ setup_ssl_certs | Copy ca cert to /etc/pki/ca-trust/source/anchors/ and runs upd
 pci_config | Generates /home/stack/heira-overrides.yaml for tls settings 
 config_undercloud | Generates /home/stack/undercloud.conf
 install_undercloud | Runs "openstack undercloud install" for the undercloud install.
+overcloud_glance_images | Downloads, unzip, uncompresses and uploads overcloud glance images.
 
 ### Example(ran from /etc/dci-openstack/agent/hooks/running.yml)
 ```

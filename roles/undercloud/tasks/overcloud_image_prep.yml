@@ -1,0 +1,36 @@
+---
+
+- name: Install the latest overcloud and ironic agent glance image packages.
+  dnf:
+    name: '{{ item }}'
+    state: latest
+  with_items: '{{ overcloud_image_pkg_names }}'
+  become: True
+  tags:
+    - overcloud_glance_images
+
+- name: Create the images dir if not done already
+  file:
+    name: "/home/stack/images"
+    state: directory
+  tags:
+    - overcloud_glance_images
+
+- name: Clean out and refresh images in /home/stack/images
+  shell: |
+    rm -f /home/stack/images/*
+    {% for curimage in overcloud_glance_image_files %}
+    tar -xvf {{ curimage }}
+    {% endfor %}
+  args:
+    chdir: /home/stack/images/
+  tags:
+    - overcloud_glance_images
+
+- name: Import these images into the director
+  shell: |
+    source /home/stack/stackrc
+    openstack overcloud image upload --image-path /home/stack/images
+  tags:
+    - overcloud_glance_images
+    

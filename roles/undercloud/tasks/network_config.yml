@@ -1,5 +1,5 @@
 ---
-- name: Clean up the registery just in case
+- name: Clean up the dnf cache and prime rhsm
   shell: |
     # clean old cruft
     dnf clean all
@@ -15,9 +15,7 @@
   dnf:
     name: "{{ item }}"
     state: latest
-  with_items:
-    - network-scripts
-    - network-scripts-team
+  with_items: "{{ network_service_rpms }}"
   become: True
   tags:
     - config_network

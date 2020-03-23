@@ -1,4 +1,19 @@
 ---
+
+# Pull in variables based on dci topic
+- name: Pull in variables based on dci topic
+  include_vars: "{{lookup('first_Found', params)}}"
+  vars:
+    params:
+      files:
+        - '{{ dci_topic | lower }}.yml'
+      paths:
+        - 'vars'
+      skip: True
+  tags:
+    - always
+
+
 # Redhat docs skimp on the network config
 
 - include: network_config.yml
@@ -27,3 +42,5 @@
 - include: configuring_the_director.yml
 
 - include: openstack_undercloud_install.yml
+
+- include: overcloud_image_prep.yml

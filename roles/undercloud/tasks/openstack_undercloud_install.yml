@@ -1,5 +1,7 @@
 ---
 - name: Run the 'openstack undercloud install' command as stack
   shell: openstack undercloud install
+  args:
+    creates: /home/stack/stackrc
   tags:
     - install_undercloud
