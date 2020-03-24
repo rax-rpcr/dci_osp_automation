@@ -1,0 +1,18 @@
+{
+  "nodes": [
+{% for ironicnode in ironic_nodes %}
+    {
+      "mac": {{ ironicnode['mac'] | replace("'", '"') }},
+      "name": "{{ ironicnode['name'] }}",
+      "cpu": "{{ ironicnode['cpu'] }}",
+      "memory": "{{ ironicnode['memory'] }}",
+      "disk": "{{ ironicnode['disk'] }}",
+      "arch": "{{ ironicnode['arch'] }}",
+      "pm_type": "{{ ironicnode['pm_type'] }}",
+      "pm_user": "{{ ironicnode['pm_user'] }}",
+      "pm_password": "{{ ironicnode['pm_password'] }}",
+      "pm_addr": "{{ ironicnode['pm_addr'] }}"
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+  ]
+}

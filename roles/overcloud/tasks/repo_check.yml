@@ -1,0 +1,11 @@
+---
+
+- name: Check required repos for the overcloud installs
+  rhsm_repository:
+    name: '{{ item }}'
+    state: enabled
+  become: True
+  with_items: '{{ required_overcloud_repos }}'
+  tags:
+    - enable_overcloud_repos
+
