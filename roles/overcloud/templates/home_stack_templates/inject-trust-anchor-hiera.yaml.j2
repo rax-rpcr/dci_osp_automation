@@ -1,0 +1,5 @@
+parameter_defaults:
+  CAMap:
+    undercloud-ca:
+      content: |
+        {{ director_ca_cert | indent(width=8) }}

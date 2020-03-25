@@ -1,0 +1,61 @@
+
+# Point to our custom network configuration configs for each role.
+resource_registry:
+  OS::TripleO::Compute::Net::SoftwareConfig: /home/stack/templates/nic-configs/compute.yaml
+  OS::TripleO::Controller::Net::SoftwareConfig: /home/stack/templates/nic-configs/controller.yaml
+  OS::TripleO::CephStorage::Net::SoftwareConfig: /home/stack/templates/nic-configs/ceph-storage.yaml
+
+# Start laying out the general network info used by the custom network 
+# configs.
+parameter_defaults:
+
+  # Control plane related settings
+  ControlPlaneSubnetCidr: "{{ ironic_provisioning_network.split('/')[1] }}"
+  ControlPlaneDefaultRoute: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1"
+  EC2MetadataIp: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1"
+
+  # External network related settings
+  ExternalNetCidr: "{{ external_network_cidr }}"
+  ExternalAllocationPools: [{'start': '{{ external_network_cidr.split('.')[0:3] | join('.') }}.54', 'end': '{{ external_network_cidr.split('.')[0:3] | join('.') }}.55'}]
+  ExternalInterfaceDefaultRoute: "{{ external_network_gateway }}"
+  PublicVirtualFixedIPs: [{'ip_address':'{{ external_floating_ip }}'}]
+
+  # Internal network related settings
+  InternalApiNetCidr: "{{ internal_network_cidr }}"
+  InternalApiNetworkVlanID: "{{ internal_vlan }}"
+  InternalApiAllocationPools: [{'start': '{{ internal_dhcp_from }}', 'end': '{{ internal_dhcp_to }}'}]
+
+  # Storage network related settings
+  StorageNetCidr: "{{ storage_network_cidr }}"
+  StorageNetworkVlanID: "{{ storage_vlan }}"
+  StorageAllocationPools: [{'start': '{{ storage_dhcp_from }}', 'end': '{{ storage_dhcp_to }}'}]
+
+  # Storage management network related settings
+  StorageMgmtNetCidr: "{{ stor_mgmt_network_cidr }}"
+  StorageMgmtNetworkVlanID: "{{ stor_mgmt_vlan }}"
+  StorageMgmtAllocationPools: [{'start': '{{ stor_mgmt_dhcp_from }}', 'end': '{{ stor_mgmt_dhcp_to }}'}]
+
+  # Manilla network related settings
+  StorageNFSNetCidr: "{{ manilla_network_cidr }}"
+  StorageNFSNetworkVlanID: "{{ manilla_vlan }}"
+  StorageNFSAllocationPools: [{'start': '{{ manilla_dhcp_from }}', 'end': '{{ manilla_dhcp_to }}'}]
+
+  # VXLAN/GRE network for neutron private networks
+  TenantNetCidr: "{{ tenant_network_cidr }}"
+  TenantNetworkVlanID: "{{ tenant_vlan }}"
+  TenantAllocationPools: [{'start': '{{ tenant_dhcp_from }}', 'end': '{{ tenant_dhcp_to }}'}]
+
+
+  DnsServers: ["69.20.0.164","69.20.0.196"]
+  #NeutronNetworkType: 'vxlan,vlan'
+  #NeutronTunnelTypes: 'vxlan'
+  NeutronEnableIsolatedMetadata: true
+  BondInterfaceOvsOptions: "mode=active-backup"
+  NetworkDeploymentActions: ['CREATE','UPDATE']
+  NeutronNetworkVLANRanges: "datacentre:2065:2069"
+  NeutronBridgeMappings: "datacentre:br-ex"
+#  CloudName: flexcap01.rpc.rackspace.com
+  CloudName: pcicloud01.rpc.rackspace.com
+  ServiceNetMap:
+    KeystoneAdminApiNetwork: internal_api
+

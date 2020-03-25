@@ -1,6 +1,7 @@
 ---
-# Starting with teh "Obtaining images for overcloud nodes"
+# Starting with the "Obtaining images for overcloud nodes"
 # section here: https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.0/html/director_installation_and_usage/installing-the-undercloud
+
 
 # Pull in variables based on dci topic
 - name: Pull in variables based on dci topic
@@ -17,4 +18,8 @@
 
 - include: repo_check.yml
 
+# Following redhat doc: https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.0/html/director_installation_and_usage/creating-a-basic-overcloud-with-cli-tools
+
 - include: register_ironic_nodes.yml
+
+- include: generate_templates.yml

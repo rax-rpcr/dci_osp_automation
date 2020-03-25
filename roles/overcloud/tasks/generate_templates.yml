@@ -1,0 +1,43 @@
+---
+
+- name: Pull the undercloud ca cert into a variable for use in the templates
+  slurp:
+    src: "/etc/pki/ca-trust/source/anchors/director-ca.crt"
+  register: caslurp
+  when: enable_self_signed_certs 
+  tags:
+    - overcloud_env_templates
+
+- name: Set the director_ca_cert variable from the contents.
+  set_fact:
+    director_ca_cert: "{{ caslurp['content'] | b64decode }}"
+  when: enable_self_signed_certs 
+  tags:
+    - overcloud_env_templates
+
+- name: Pull the undercloud ca cert into a variable for use in the templates
+  slurp:
+    src: "/etc/pki/ca-trust/source/anchors/cm-local-ca.pem"
+  register: caslurp
+  when: not enable_self_signed_certs 
+  tags:
+    - overcloud_env_templates
+
+- name: Set the director_ca_cert variable from the contents.
+  set_fact:
+    director_ca_cert: "{{ caslurp['content'] | b64decode }}"
+  when: not enable_self_signed_certs 
+  tags:
+    - overcloud_env_templates
+
+- name: Set up the /home/stack/templates/node-info.yaml environment file
+  template:
+    src: home_stack_templates/{{ item }}.yaml.j2
+    dest: /home/stack/templates/{{ item }}.yaml
+  with_items:
+    - "node-info"
+    - "inject-trust-anchor-hiera"
+    - "network-environment"
+  tags:
+    - overcloud_env_templates
+

@@ -71,8 +71,9 @@
     {% for curnode in ironic_nodes %}
         openstack baremetal node show {{ curnode.name }} --fields properties | grep profile
         if [ $? != 0 ]; then
-          openstack baremetal node set --property capabilities='profile:{{ curnode.profile }},boot_option:local' {{ curnode.name }}
+          openstack baremetal node set --property capabilities='profile:{{ curnode.profile }},boot_option:local,node:{{ curnode.profile }}-{{ curnode.node_index }}' {{ curnode.name }}
         fi
     {% endfor %}
   tags:
     - register_ironic_nodes
+
