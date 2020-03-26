@@ -1,0 +1,20 @@
+---
+- name: Create /home/stack/scripts
+  file:
+    state: directory
+    path: /home/stack/scripts
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - generate_scripts
+
+- name: Generate the environment_args for ordering environment arguments
+  template:
+    src: home_stack_scripts/environment_args.j2
+    dest: /home/stack/scripts/environment_args
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - generate_scripts

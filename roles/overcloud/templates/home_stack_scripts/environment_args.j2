@@ -1,0 +1,45 @@
+#######################################################
+# Environment files for the overcloud deploy.
+# ORDERING MATTERS(later files override earlier ones)
+#######################################################
+
+
+#######################################################
+# node-info.yml
+#  - Node count
+#  - Hostname mapping
+#  - Static ip addressing 
+#######################################################
+ENVIRONMENT_ARGS="-e /home/stack/templates/node-info.yaml"
+
+
+#######################################################
+# network-isolation.yaml
+#   - Network separation.
+#   - Without this everything goes on ironic prov net
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/network-isolation.yaml"
+
+
+#######################################################
+# network-environment.yaml
+#  - Define networks, gateways, vips, dns, neutron 
+#    configs.
+#  - Used in network isolation config templates
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/network-environment.yaml"
+
+
+#######################################################
+# inject-trust-anchor-hiera.yaml
+#   - Inject the undercloud CA certificate into the 
+#     overcloud node trust.
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/inject-trust-anchor-hiera.yaml"
+
+
+
+#######################################################
+# Export the end results
+#######################################################
+export ENVIRONMENT_ARGS

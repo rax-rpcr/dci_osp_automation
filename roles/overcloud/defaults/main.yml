@@ -3,3 +3,11 @@
 # Used to decide where to pull the undercloud cert from
 # based off of the undercloud role in this same repo.
 enable_self_signed_certs: true
+enable_pci: true
+
+
+# Overcloud defaults
+overcloud_nameservers: 
+  - 69.20.0.164
+  - 69.20.0.196
+

@@ -41,3 +41,26 @@
   tags:
     - overcloud_env_templates
 
+- name: Create /home/stack/templates/custom-nics
+  file:
+    state: directory
+    path: /home/stack/templates/custom-nics
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - overcloud_env_templates
+
+- name: Copy all of the environment specific nic configs over
+  copy:
+    src: home_stack_templates/{{ lab_network_environment }}-custom-nics/{{ item }}.yaml
+    dest: /home/stack/templates/custom-nics/{{ item }}.yaml
+    owner: stack
+    group: stack
+    mode: '0644'
+  with_items:
+    - controller
+    - compute
+    - ceph-storage
+  tags:
+    - overcloud_env_templates

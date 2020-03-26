@@ -23,3 +23,5 @@
 - include: register_ironic_nodes.yml
 
 - include: generate_templates.yml
+
+- include: generate_scripts.yml

@@ -1,9 +1,9 @@
 
 # Point to our custom network configuration configs for each role.
 resource_registry:
-  OS::TripleO::Compute::Net::SoftwareConfig: /home/stack/templates/nic-configs/compute.yaml
-  OS::TripleO::Controller::Net::SoftwareConfig: /home/stack/templates/nic-configs/controller.yaml
-  OS::TripleO::CephStorage::Net::SoftwareConfig: /home/stack/templates/nic-configs/ceph-storage.yaml
+  OS::TripleO::Compute::Net::SoftwareConfig: /home/stack/templates/custom-nics/compute.yaml
+  OS::TripleO::Controller::Net::SoftwareConfig: /home/stack/templates/custom-nics/controller.yaml
+  OS::TripleO::CephStorage::Net::SoftwareConfig: /home/stack/templates/custom-nics/ceph-storage.yaml
 
 # Start laying out the general network info used by the custom network 
 # configs.
@@ -13,6 +13,8 @@ parameter_defaults:
   ControlPlaneSubnetCidr: "{{ ironic_provisioning_network.split('/')[1] }}"
   ControlPlaneDefaultRoute: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1"
   EC2MetadataIp: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1"
+  ControlPlaneStaticRoutes:
+    - {'destination':'169.254.169.254/32', 'nexthop':'{{ "{{" }} EC2MetadataIp {{ "}}" }}'}
 
   # External network related settings
   ExternalNetCidr: "{{ external_network_cidr }}"
@@ -45,17 +47,35 @@ parameter_defaults:
   TenantNetworkVlanID: "{{ tenant_vlan }}"
   TenantAllocationPools: [{'start': '{{ tenant_dhcp_from }}', 'end': '{{ tenant_dhcp_to }}'}]
 
+  # Overcloud dns servers
+  DnsServers:
+{% for nameserver in overcloud_nameservers %}
+  - {{ nameserver }}
+{% endfor %}
 
-  DnsServers: ["69.20.0.164","69.20.0.196"]
-  #NeutronNetworkType: 'vxlan,vlan'
-  #NeutronTunnelTypes: 'vxlan'
-  NeutronEnableIsolatedMetadata: true
+  # Dns name used for the overcloud services
+  CloudName: openstack.{{ domain_name }}
+
+  # Neutron allowed type and tunneling settings
+  NeutronNetworkType: 'vxlan,vlan'
+  NeutronTunnelTypes: 'vxlan'
+
+  # Bonding mode
   BondInterfaceOvsOptions: "mode=active-backup"
-  NetworkDeploymentActions: ['CREATE','UPDATE']
-  NeutronNetworkVLANRanges: "datacentre:2065:2069"
-  NeutronBridgeMappings: "datacentre:br-ex"
-#  CloudName: flexcap01.rpc.rackspace.com
-  CloudName: pcicloud01.rpc.rackspace.com
+
+  # Update network on deployment if needed. After testing
+  # This should probably be only "Create" which is the 
+  # default.
+  # NetworkDeploymentActions: ['CREATE','UPDATE']
+
+{% if enable_pci %}
+  # OSP will set this to the provisioning network to allow keystone changes
+  # during the deployment as it doesn't normally have access to the internal
+  # api network. The security team didn't like this, so we now set up a
+  # vlan interface on the directory vm for the internal network.  This setting
+  # makes the admin api for keystone point to the internal network floating
+  # ip. 
   ServiceNetMap:
     KeystoneAdminApiNetwork: internal_api
+{% endif %}
 
