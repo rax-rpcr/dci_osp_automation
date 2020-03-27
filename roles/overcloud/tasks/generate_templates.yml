@@ -30,7 +30,37 @@
   tags:
     - overcloud_env_templates
 
-- name: Set up the /home/stack/templates/node-info.yaml environment file
+- name: Pull the overcloud cert into a variable for use in the templates
+  slurp:
+    src: "{{ ssl_working_dir }}/{{ overcloud_endpoint_fqdn }}.crt"
+  register: overcloudcrtslurp
+  when: enable_self_signed_certs 
+  tags:
+    - overcloud_env_templates
+
+- name: Set the overcloud_cert variable from the contents.
+  set_fact:
+    overcloud_cert: "{{ overcloudcrtslurp['content'] | b64decode }}"
+  when: enable_self_signed_certs 
+  tags:
+    - overcloud_env_templates
+
+- name: Pull the overcloud key into a variable for use in the templates
+  slurp:
+    src: "{{ ssl_working_dir }}/{{ overcloud_endpoint_fqdn }}.key"
+  register: overcloudkeyslurp
+  when: enable_self_signed_certs 
+  tags:
+    - overcloud_env_templates
+
+- name: Set the overcloud_key variable from the contents.
+  set_fact:
+    overcloud_key: "{{ overcloudkeyslurp['content'] | b64decode }}"
+  when: enable_self_signed_certs 
+  tags:
+    - overcloud_env_templates
+
+- name: Set up the /home/stack/templates/<envfile>.yaml environment files
   template:
     src: home_stack_templates/{{ item }}.yaml.j2
     dest: /home/stack/templates/{{ item }}.yaml
@@ -38,6 +68,7 @@
     - "node-info"
     - "inject-trust-anchor-hiera"
     - "network-environment"
+    - "enable-tls"
   tags:
     - overcloud_env_templates
 
@@ -52,7 +83,7 @@
     - overcloud_env_templates
 
 - name: Copy all of the environment specific nic configs over
-  copy:
+  template:
     src: home_stack_templates/{{ lab_network_environment }}-custom-nics/{{ item }}.yaml
     dest: /home/stack/templates/custom-nics/{{ item }}.yaml
     owner: stack
@@ -62,5 +93,61 @@
     - controller
     - compute
     - ceph-storage
+  tags:
+    - overcloud_env_templates
+
+
+- name: Create /home/stack/templates/roles
+  file:
+    state: directory
+    path: /home/stack/templates/roles
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - overcloud_env_templates
+
+- name: Generate the /home/stack/roles_data.yaml file
+  template:
+    src: home_stack_templates/roles/roles_data.yaml
+    dest: /home/stack/templates/roles/roles_data.yaml
+    owner: stack
+    group: stack
+    mode: '0644'
+  tags:
+    - overcloud_env_templates
+
+
+- name: Set up the /home/stack/templates/enable-tls.yaml environment file
+  template:
+    src: home_stack_templates/enable-tls.yaml.j2
+    dest: /home/stack/templates/enable-tls.yaml
+  when: enable_self_signed_certs
+  # we can add another here when testing user provided certs later on
+  tags:
+    - overcloud_env_templates
+
+
+- name: Set up the /home/stack/templates/octavia.yaml environment file
+  template:
+    src: home_stack_templates/octavia.yaml.j2
+    dest: /home/stack/templates/octavia.yaml
+  when: enable_octavia
+  tags:
+    - overcloud_env_templates
+
+- name: Set up the /home/stack/templates/ceph-ansible.yaml environment file
+  template:
+    src: home_stack_templates/ceph-ansible.yaml.j2
+    dest: /home/stack/templates/ceph-ansible.yaml
+  when: enable_ceph
+  tags:
+    - overcloud_env_templates
+
+- name: Set up the /home/stack/templates/ceph-config.yaml environment file
+  template:
+    src: home_stack_templates/{{ lab_ceph_config }}-ceph-config.yaml.j2
+    dest: /home/stack/templates/ceph-config.yaml
+  when: enable_ceph
   tags:
     - overcloud_env_templates

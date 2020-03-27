@@ -1,0 +1,38 @@
+---
+
+- name: Generate the overcloud services ssl key
+  shell: openssl genrsa -out {{ overcloud_endpoint_fqdn }}.key 2048
+  args:
+    chdir: "{{ ssl_working_dir }}" 
+    creates: "{{ ssl_working_dir }}/{{ overcloud_endpoint_fqdn }}.key"
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+
+- name: Generate the overcloud services ssl certificate request
+  shell: |
+    openssl req -new -sha256 -key {{ overcloud_endpoint_fqdn }}.key -out {{ overcloud_endpoint_fqdn }}.csr \
+      -subj "/C={{ ssl_C }}/ST={{ ssl_ST }}/L={{ ssl_L }}/O={{ ssl_O }}/CN={{ overcloud_endpoint_fqdn }}"
+  args:
+    chdir: "{{ ssl_working_dir }}" 
+    creates: "{{ ssl_working_dir }}/{{ overcloud_endpoint_fqdn }}.csr"
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+
+- name: Generate the overcloud services ssl certificate
+  shell: |
+    echo 'subjectAltName=DNS:{{ overcloud_endpoint_fqdn }},IP:{{ external_floating_ip }},IP:{{ internal_floating_ip }}' > /tmp/san.txt
+    openssl x509 -req -in {{ overcloud_endpoint_fqdn }}.csr \
+      -CA director-ca.crt -CAkey director-ca.key \
+      -CAcreateserial -out {{ overcloud_endpoint_fqdn }}.crt \
+      -extfile /tmp/san.txt
+    rm -f /tmp/san.txt
+  args:
+    chdir: "{{ ssl_working_dir }}" 
+    creates: "{{ ssl_working_dir }}/{{ overcloud_endpoint_fqdn }}.crt"
+  when: enable_self_signed_certs
+  tags:
+    - setup_ssl_certs
+

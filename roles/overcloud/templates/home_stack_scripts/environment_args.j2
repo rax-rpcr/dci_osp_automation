@@ -2,6 +2,7 @@
 # Environment files for the overcloud deploy.
 # ORDERING MATTERS(later files override earlier ones)
 #######################################################
+unset ENVIRONMENT_ARGS
 
 
 #######################################################
@@ -37,6 +38,52 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/network-environme
 #######################################################
 ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/inject-trust-anchor-hiera.yaml"
 
+{% if enable_self_signed_certs %}
+#######################################################
+# enable-tls.yaml
+#   - Enable tls on overcloud public endpoints.
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/enable-tls.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/tls-endpoints-public-dns.yaml"
+{% endif %}
+
+{% if enable_octavia %}
+#######################################################
+# octavia.yaml
+#   - Enable octavia load balancers
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/octavia.yaml"
+{% endif %}
+
+
+
+{% if enable_ceph %}
+#######################################################
+# ceph-ansible.yaml
+#   - Enable Ceph
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/ceph-ansible.yaml"
+
+
+#######################################################
+# Enable ceph rados gw to act as object storage
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-rgw.yaml"
+
+{% if enable_manilla %}
+#######################################################
+# Enable ceph mds if manilla is anbled
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-mds.yaml"
+{% endif %}
+
+#######################################################
+# ceph-config.yaml
+#   - Configure ceph-ansible cluster
+#   - Last of the ceph files  to override defaults
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/ceph-configure.yaml"
+{% endif %}
 
 
 #######################################################

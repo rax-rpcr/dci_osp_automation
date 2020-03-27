@@ -4,10 +4,25 @@
 # based off of the undercloud role in this same repo.
 enable_self_signed_certs: true
 enable_pci: true
+enable_octavia: true
+enable_ceph: true
+enable_manilla: true
 
 
 # Overcloud defaults
+
+ssl_working_dir: "/home/stack/sslfiles"
+ssl_C: "US"
+ssl_ST: "Texas"
+ssl_L: "San Antonio"
+ssl_O: "RPC-R"
+ssl_CN_prefix: "ca"
+
+overcloud_endpoint_fqdn: "overcloud.{{ domain_name }}"
+
+
 overcloud_nameservers: 
   - 69.20.0.164
   - 69.20.0.196
+
 

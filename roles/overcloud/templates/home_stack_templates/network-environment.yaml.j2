@@ -26,6 +26,7 @@ parameter_defaults:
   InternalApiNetCidr: "{{ internal_network_cidr }}"
   InternalApiNetworkVlanID: "{{ internal_vlan }}"
   InternalApiAllocationPools: [{'start': '{{ internal_dhcp_from }}', 'end': '{{ internal_dhcp_to }}'}]
+  InternalApiVirtualFixedIPs: [{'ip_address':'{{ internal_floating_ip }}'}]
 
   # Storage network related settings
   StorageNetCidr: "{{ storage_network_cidr }}"
@@ -37,10 +38,12 @@ parameter_defaults:
   StorageMgmtNetworkVlanID: "{{ stor_mgmt_vlan }}"
   StorageMgmtAllocationPools: [{'start': '{{ stor_mgmt_dhcp_from }}', 'end': '{{ stor_mgmt_dhcp_to }}'}]
 
+{% if enable_manilla %}
   # Manilla network related settings
   StorageNFSNetCidr: "{{ manilla_network_cidr }}"
   StorageNFSNetworkVlanID: "{{ manilla_vlan }}"
   StorageNFSAllocationPools: [{'start': '{{ manilla_dhcp_from }}', 'end': '{{ manilla_dhcp_to }}'}]
+{% endif %}
 
   # VXLAN/GRE network for neutron private networks
   TenantNetCidr: "{{ tenant_network_cidr }}"

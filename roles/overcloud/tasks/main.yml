@@ -22,6 +22,8 @@
 
 - include: register_ironic_nodes.yml
 
+- include: setup_ssl_certs.yml
+
 - include: generate_templates.yml
 
 - include: generate_scripts.yml

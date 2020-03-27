@@ -1,0 +1,28 @@
+resource_registry:
+  OS::TripleO::Services::OctaviaApi: /usr/share/openstack-tripleo-heat-templates/deployment/octavia/octavia-api-container-puppet.yaml
+  OS::TripleO::Services::OctaviaHousekeeping: /usr/share/openstack-tripleo-heat-templates/deployment/octavia/octavia-housekeeping-container-puppet.yaml
+  OS::TripleO::Services::OctaviaHealthManager: /usr/share/openstack-tripleo-heat-templates/deployment/octavia/octavia-health-manager-container-puppet.yaml
+  OS::TripleO::Services::OctaviaWorker: /usr/share/openstack-tripleo-heat-templates/deployment/octavia/octavia-worker-container-puppet.yaml
+  OS::TripleO::Services::OctaviaDeploymentConfig: /usr/share/openstack-tripleo-heat-templates/deployment/octavia/octavia-deployment-config.yaml
+
+parameter_defaults:
+    NeutronEnableForceMetadata: true
+
+    # This flag enables internal generation of certificates for communication
+    # with amphorae. Use OctaviaCaCert, OctaviaCaKey, OctaviaCaKeyPassphrase,
+    # OctaviaClient and OctaviaServerCertsKeyPassphrase cert to configure
+    # secure production environments.
+    OctaviaGenerateCerts: true
+
+    OctaviaTimeoutClientData: 1200000
+    OctaviaTimeoutMemberData: 1200000
+    OctaviaTimeoutMemberConnect: 1200000
+
+    # haproxy lb with failover ip between lbs(Tech Preview)
+    OctaviaLoadBalancerTopology: ACTIVE_STANDBY
+    OctaviaAntiAffinity: true
+
+    # Another option for failover would be a more stable but slower option using ampora spares
+    # OctaviaLoadBalancerTopology: SINGLE
+    # octavia::housekeeping::spare_amphora_pool_size: 2
+

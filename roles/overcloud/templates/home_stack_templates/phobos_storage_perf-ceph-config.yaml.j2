@@ -1,0 +1,53 @@
+parameter_defaults:
+  CephAnsibleEnvironmentVariables:
+    ANSIBLE_SSH_RETRIES: '10'
+    DEFAULT_FORKS: '32'
+  CephAnsiblePlaybookVerbosity: 1
+  CephAnsibleExtraConfig:
+    ceph_osd_docker_cpu_limit: 0
+    health_osd_check_delay: 40
+    health_osd_check_retries: 30
+    health_mon_check_retries: 10
+    health_mon_check_delay: 20
+  CephConfigOverrides:
+    rgw_swift_account_in_url: true
+    osd_recovery_op_priority: 1
+    osd_recovery_max_active: 1
+    osd_max_backfills: 1
+    max_open_files: 131072
+  CephAnsibleDisksConfig:
+    osd_objectstore: bluestore
+    osd_scenario: lvm
+    devices:
+      - /dev/sdb
+      - /dev/sdc
+      - /dev/sdd
+      - /dev/sde
+      - /dev/sdf
+      - /dev/sdg
+      - /dev/sdh
+      - /dev/sdi
+      - /dev/sdj
+      - /dev/sdk
+  CephPoolDefaultPgNum: 32
+  CephPools:
+    - name: default.rgw.buckets.data
+      pg_num: 128
+      application: rgw
+    - name: volumes
+      pg_num: 512
+      application: rbd
+    - name: backups
+      pg_num: 64
+      application: rbd
+    - name: vms
+      pg_num: 256
+      application: rbd
+    - name: images
+      pg_num: 64
+      application: rbd
+    - name: metrics
+      pg_num: 64
+      rule_name: standard
+      application: openstack_gnocchi
+

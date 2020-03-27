@@ -68,7 +68,7 @@
     rm -f /tmp/san.txt
   args:
     chdir: "{{ ssl_working_dir }}" 
-    creates: "{{ ssl_working_dir }}/{{ ansible_fqdn }}.cst"
+    creates: "{{ ssl_working_dir }}/{{ ansible_fqdn }}.crt"
   when: enable_self_signed_certs
   tags:
     - setup_ssl_certs
