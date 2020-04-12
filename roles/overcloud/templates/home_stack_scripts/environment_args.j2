@@ -15,6 +15,18 @@ ENVIRONMENT_ARGS="-e /home/stack/templates/node-info.yaml"
 
 
 #######################################################
+# Container Podman/Docker image related
+#  - containers-prepare-parameter.yaml: Created during
+#       undercloud install.  New way of working with
+#       container images.
+#  - container_overrides.yaml: Redhat creds for repo
+#       access.    
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/containers-prepare-parameter.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/container_overrides.yaml"
+
+
+#######################################################
 # network-isolation.yaml
 #   - Network separation.
 #   - Without this everything goes on ironic prov net
@@ -32,6 +44,14 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/network-environme
 
 
 #######################################################
+# docker-ha.yaml
+#  - enable high availability of the controller services using pacemaker.
+#  - https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/features/high_availability.html
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/docker-ha.yaml"
+
+
+#######################################################
 # inject-trust-anchor-hiera.yaml
 #   - Inject the undercloud CA certificate into the 
 #     overcloud node trust.
@@ -44,7 +64,7 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/inject-trust-anch
 #   - Enable tls on overcloud public endpoints.
 #######################################################
 ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/enable-tls.yaml"
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/tls-endpoints-public-dns.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/ssl/tls-endpoints-public-dns.yaml"
 {% endif %}
 
 {% if enable_octavia %}
@@ -70,9 +90,9 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/ceph-ansible.yaml
 #######################################################
 ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-rgw.yaml"
 
-{% if enable_manilla %}
+{% if enable_manila %}
 #######################################################
-# Enable ceph mds if manilla is anbled
+# Enable ceph mds if manila is anbled
 #######################################################
 ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-mds.yaml"
 {% endif %}
@@ -82,9 +102,15 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templ
 #   - Configure ceph-ansible cluster
 #   - Last of the ceph files  to override defaults
 #######################################################
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/ceph-configure.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/ceph-config.yaml"
 {% endif %}
 
+
+#######################################################
+# manila.yaml
+#  - enable manila services.
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/manila-cephfsganesha-config.yaml"
 
 #######################################################
 # Export the end results

@@ -6,7 +6,7 @@ enable_self_signed_certs: true
 enable_pci: true
 enable_octavia: true
 enable_ceph: true
-enable_manilla: true
+enable_manila: true
 
 
 # Overcloud defaults
@@ -25,4 +25,7 @@ overcloud_nameservers:
   - 69.20.0.164
   - 69.20.0.196
 
+overcloud_ntpservers:
+  - 69.20.0.164
+  - 69.20.0.196
 

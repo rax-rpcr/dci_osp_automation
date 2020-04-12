@@ -33,21 +33,26 @@ parameter_defaults:
   CephPools:
     - name: default.rgw.buckets.data
       pg_num: 128
+      rule_name: "replicated_rule"
       application: rgw
     - name: volumes
       pg_num: 512
+      rule_name: "replicated_rule"
       application: rbd
     - name: backups
       pg_num: 64
+      rule_name: "replicated_rule"
       application: rbd
     - name: vms
       pg_num: 256
+      rule_name: "replicated_rule"
       application: rbd
     - name: images
       pg_num: 64
+      rule_name: "replicated_rule"
       application: rbd
     - name: metrics
       pg_num: 64
-      rule_name: standard
+      rule_name: "replicated_rule"
       application: openstack_gnocchi
 

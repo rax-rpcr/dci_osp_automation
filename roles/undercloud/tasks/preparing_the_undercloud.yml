@@ -20,7 +20,7 @@
   lineinfile:
     path: /etc/hosts
     regexp: "^{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1"
-    line: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1 directorvm.{{ domain_name }} directorvm"
+    line: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1 directorvm.{{ domain_name }} directorvm directorvm.ctlplane"
   become: True
   tags:
     - undercloud_prep

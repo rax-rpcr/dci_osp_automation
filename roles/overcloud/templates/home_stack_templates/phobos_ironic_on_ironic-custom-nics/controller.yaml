@@ -76,7 +76,7 @@ parameters:
       Unless the default is changed, the parameter is automatically resolved
       from the subnet host_routes attribute.
     type: json
-{% if enable_manilla %}
+{% if enable_manila %}
   StorageNFSIpSubnet:
     default: ''
     description: IP address/subnet on the storage_nfs network
@@ -85,6 +85,20 @@ parameters:
     default: 70
     description: Vlan ID for the storage_nfs network traffic.
     type: number
+  StorageNFSMtu:
+    default: 1500
+    description: The maximum transmission unit (MTU) size(in bytes) that is
+      guaranteed to pass through the data path of the segments in the
+      StorageMgmt network.
+    type: number
+  StorageNFSInterfaceRoutes:
+    default: []
+    description: >
+      Routes for the storage_mgmt network traffic.
+      JSON route e.g. [{'destination':'10.0.0.0/16', 'nexthop':'10.0.0.1'}]
+      Unless the default is changed, the parameter is automatically resolved
+      from the subnet host_routes attribute.
+    type: json
 {% endif %}
   InternalApiIpSubnet:
     default: ''
@@ -206,7 +220,7 @@ resources:
             $network_config:
               network_config:
               - type: interface
-                name: eth0
+                name: eno49
                 mtu:
                   get_param: ControlPlaneMtu
                 use_dhcp: false
@@ -216,9 +230,14 @@ resources:
                     - /
                     - - get_param: ControlPlaneIp
                       - get_param: ControlPlaneSubnetCidr
+                - ip_netmask:
+                    get_param: ExternalIpSubnet
                 routes:
                   list_concat_unique:
                     - get_param: ControlPlaneStaticRoutes
+                    - - default: true
+                        next_hop:
+                          get_param: ExternalInterfaceDefaultRoute
               - type: ovs_bridge
                 name: bridge_name
                 dns_servers:
@@ -226,18 +245,12 @@ resources:
                 domain:
                   get_param: DnsSearchDomains
                 members:
-                - type: ovs_bond
-                  name: bond0
+                - type: interface
+                  name: eno50
                   mtu:
                     get_attr: [MinViableMtu, value]
-                  ovs_options:
-                    get_param: BondInterfaceOvsOptions
-                  members:
-                  - type: interface
-                    name: eth1
-                    mtu:
-                      get_attr: [MinViableMtu, value]
-                    primary: true
+                  use_dhcp: false
+                  primary: true
                 - type: vlan
                   mtu:
                     get_param: StorageMtu
@@ -282,21 +295,7 @@ resources:
                   routes:
                     list_concat_unique:
                       - get_param: TenantInterfaceRoutes
-                - type: vlan
-                  mtu:
-                    get_param: ExternalMtu
-                  vlan_id:
-                    get_param: ExternalNetworkVlanID
-                  addresses:
-                  - ip_netmask:
-                      get_param: ExternalIpSubnet
-                  routes:
-                    list_concat_unique:
-                      - get_param: ExternalInterfaceRoutes
-                      - - default: true
-                          next_hop:
-                            get_param: ExternalInterfaceDefaultRoute
-{% if enable_manilla %}
+{% if enable_manila %}
                 - type: vlan
                   device: bond0
                   mtu:

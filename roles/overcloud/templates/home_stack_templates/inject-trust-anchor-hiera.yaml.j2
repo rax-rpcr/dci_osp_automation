@@ -3,3 +3,6 @@ parameter_defaults:
     undercloud-ca:
       content: |
         {{ director_ca_cert | indent(width=8) }}
+    overcloud-ca:
+      content: |
+        {{ director_ca_cert | indent(width=8) }}

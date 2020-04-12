@@ -23,7 +23,7 @@
       subnet: storage_mgmt_subnet
     Tenant:
       subnet: tenant_subnet
-{% if enable_manilla %}
+{% if enable_manila %}
     StorageNFS:
       subnet: storage_nfs_subnet
 {% endif %}
@@ -62,7 +62,7 @@
     - OS::TripleO::Services::CephMon
     - OS::TripleO::Services::CephRbdMirror
     - OS::TripleO::Services::CephRgw
-{% if enable_manilla %}
+{% if enable_manila %}
     - OS::TripleO::Services::CephNfs
 {% endif %}
     - OS::TripleO::Services::CertmongerUser

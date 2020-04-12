@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Source the '-e' environment args
+. /home/stack/scripts/environment_args
+
+# Deploy the overcloud
+openstack tripleo container image prepare default \
+    --local-push-destination \
+    $ENVIRONMENT_ARGS \
+    --output-env-file /home/stack/containers-prepare-parameter.yaml
+

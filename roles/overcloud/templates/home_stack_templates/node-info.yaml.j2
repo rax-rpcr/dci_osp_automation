@@ -46,7 +46,11 @@ parameter_defaults:
   # Now we can set up the hostname map for each based on the osp standard hostname(stack_name-role-index)
   HostnameMap:
 {% for ironicnode in ironic_nodes %}
-    overcloud-{{ ironicnode['role'] | lower }}-{{ ironicnode['node_index'] }}: {{ ironicnode['name'] }}
+{% if ironicnode['role'] == "Compute" %}
+    overcloud-nova{{ ironicnode['role'] | lower }}-{{ ironicnode['node_index'] }}: {{ ironicnode['name'].split('.')[0] }}
+{% else %}
+    overcloud-{{ ironicnode['role'] | lower }}-{{ ironicnode['node_index'] }}: {{ ironicnode['name'].split('.')[0] }}
+{% endif %}
 {% endfor %}
 
 {% if lab_network_environment == "phobos_ironic_on_ironic" %}

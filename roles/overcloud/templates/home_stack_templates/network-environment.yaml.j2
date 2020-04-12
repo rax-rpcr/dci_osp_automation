@@ -12,9 +12,9 @@ parameter_defaults:
   # Control plane related settings
   ControlPlaneSubnetCidr: "{{ ironic_provisioning_network.split('/')[1] }}"
   ControlPlaneDefaultRoute: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1"
-  EC2MetadataIp: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1"
+  # EC2MetadataIp: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1"
   ControlPlaneStaticRoutes:
-    - {'destination':'169.254.169.254/32', 'nexthop':'{{ "{{" }} EC2MetadataIp {{ "}}" }}'}
+    - {'destination':'169.254.169.254/32', 'nexthop':'{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1'}
 
   # External network related settings
   ExternalNetCidr: "{{ external_network_cidr }}"
@@ -38,7 +38,7 @@ parameter_defaults:
   StorageMgmtNetworkVlanID: "{{ stor_mgmt_vlan }}"
   StorageMgmtAllocationPools: [{'start': '{{ stor_mgmt_dhcp_from }}', 'end': '{{ stor_mgmt_dhcp_to }}'}]
 
-{% if enable_manilla %}
+{% if enable_manila %}
   # Manilla network related settings
   StorageNFSNetCidr: "{{ manilla_network_cidr }}"
   StorageNFSNetworkVlanID: "{{ manilla_vlan }}"
@@ -60,8 +60,8 @@ parameter_defaults:
   CloudName: openstack.{{ domain_name }}
 
   # Neutron allowed type and tunneling settings
-  NeutronNetworkType: 'vxlan,vlan'
-  NeutronTunnelTypes: 'vxlan'
+  NeutronNetworkType: 'geneve,vlan'
+  NeutronTunnelTypes: 'geneve'
 
   # Bonding mode
   BondInterfaceOvsOptions: "mode=active-backup"

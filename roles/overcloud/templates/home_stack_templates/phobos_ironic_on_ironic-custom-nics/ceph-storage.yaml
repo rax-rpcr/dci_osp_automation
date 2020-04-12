@@ -31,7 +31,6 @@ parameters:
       guaranteed to pass through the data path of the segments in the network.
       (The parameter is automatically resolved from the ctlplane network's mtu attribute.)
     type: number
-
   StorageIpSubnet:
     default: ''
     description: IP address/subnet on the storage network
@@ -76,14 +75,6 @@ parameters:
       Unless the default is changed, the parameter is automatically resolved
       from the subnet host_routes attribute.
     type: json
-  StorageNFSIpSubnet:
-    default: ''
-    description: IP address/subnet on the storage_nfs network
-    type: string
-  StorageNFSNetworkVlanID:
-    default: 70
-    description: Vlan ID for the storage_nfs network traffic.
-    type: number
   InternalApiIpSubnet:
     default: ''
     description: IP address/subnet on the internal_api network
@@ -204,7 +195,7 @@ resources:
             $network_config:
               network_config:
               - type: interface
-                name: eth0
+                name: eno49
                 mtu:
                   get_param: ControlPlaneMtu
                 use_dhcp: false
@@ -217,6 +208,9 @@ resources:
                 routes:
                   list_concat_unique:
                     - get_param: ControlPlaneStaticRoutes
+                    - - default: true
+                        next_hop:
+                          get_param: ControlPlaneDefaultRoute
               - type: ovs_bridge
                 name: bridge_name
                 dns_servers:
@@ -224,18 +218,12 @@ resources:
                 domain:
                   get_param: DnsSearchDomains
                 members:
-                - type: ovs_bond
-                  name: bond0
+                - type: interface
+                  name: eno50
                   mtu:
                     get_attr: [MinViableMtu, value]
-                  ovs_options:
-                    get_param: BondInterfaceOvsOptions
-                  members:
-                  - type: interface
-                    name: eth1
-                    mtu:
-                      get_attr: [MinViableMtu, value]
-                    primary: true
+                  use_dhcp: false
+                  primary: true
                 - type: vlan
                   mtu:
                     get_param: StorageMtu

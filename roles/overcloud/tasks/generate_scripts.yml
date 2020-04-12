@@ -18,3 +18,24 @@
     mode: '0750'
   tags:
     - generate_scripts
+
+- name: Generate the deploy_overcloud.sh for overcloud deployment
+  template:
+    src: home_stack_scripts/deploy_overcloud.sh.j2
+    dest: /home/stack/scripts/deploy_overcloud.sh
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - generate_scripts
+
+- name: Generate the container_image_prepare.sh for overcloud image prep
+  template:
+    src: home_stack_scripts/container_image_prepare.sh.j2
+    dest: /home/stack/scripts/container_image_prepare.sh
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - generate_scripts
+
