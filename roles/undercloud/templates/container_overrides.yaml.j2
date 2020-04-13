@@ -1,4 +1,8 @@
+# Move to registry.redhat.io requires auth:
+#   - https://access.redhat.com/RegistryAuthentication
+# Find username and pass here: https://access.redhat.com/terms-based-registry/
 parameter_defaults:
+  ContainerImageRegistryLogin: true
   ContainerImageRegistryCredentials:
     registry.redhat.io:
-      {{ rhsm_user }}: {{ rhsm_pass }}
+      {{ rhregistry_user }}: {{ rhregistry_pass }}

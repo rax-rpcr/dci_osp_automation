@@ -1,0 +1,9 @@
+---
+- name: Add the public endpoint to /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    regexp: "^{{ external_floating_ip }} {{ overcloud_endpoint_fqdn }}"
+    line: "{{ external_floating_ip }} {{ overcloud_endpoint_fqdn }}"
+  become: True
+  tags:
+    - public_endpoint_hosts

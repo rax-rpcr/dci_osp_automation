@@ -18,7 +18,7 @@ ssl_L: "San Antonio"
 ssl_O: "RPC-R"
 ssl_CN_prefix: "ca"
 
-overcloud_endpoint_fqdn: "overcloud.{{ domain_name }}"
+overcloud_endpoint_fqdn: "openstack.{{ domain_name }}"
 
 
 overcloud_nameservers: 
