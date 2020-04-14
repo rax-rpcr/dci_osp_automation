@@ -1,4 +1,8 @@
 ---
+- name: Pause for 15 minutes to give ironic time to clean the nodes after enrollement and inspection
+  pause:
+    minutes: 15
+
 - name: Run the overcloud deployment
   shell:
     stdbuf -i0 -o0 -e0 ./scripts/deploy_overcloud.sh 2>&1 | tee /home/stack/deploy_overcloud.log
