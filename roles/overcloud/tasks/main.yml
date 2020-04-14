@@ -29,3 +29,5 @@
 - include: generate_scripts.yml
 
 - include: public_endpoint_hosts.yml
+
+- include: run_overcloud_deploy.yml

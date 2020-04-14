@@ -1,0 +1,12 @@
+---
+- name: Run the overcloud deployment
+  shell:
+    stdbuf -i0 -o0 -e0 ./scripts/deploy_overcloud.sh 2>&1 | tee /home/stack/deploy_overcloud.log
+  args:
+    creates: /home/stack/overcloudrc
+    chdir: /home/stack/
+  async: 14400
+  poll: 30
+  register: overcloud_deploy
+  tags:
+    - run_overcloud_deploy
