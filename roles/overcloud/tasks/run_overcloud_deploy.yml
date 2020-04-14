@@ -1,7 +1,14 @@
 ---
+- name: Some fuckery is afoot with the new redhat registry login. Lets make sure it is on the undercloud node.
+  shell: podman login registry.redhat.io --username "{{ rhregistry_user }}" --password "{{ rhregistry_pass }}"
+  tags:
+    - run_overcloud_deploy
+
 - name: Pause for 15 minutes to give ironic time to clean the nodes after enrollement and inspection
   pause:
     minutes: 15
+  tags:
+    - run_overcloud_deploy
 
 - name: Run the overcloud deployment
   shell:
