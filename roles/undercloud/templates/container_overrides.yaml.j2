@@ -2,7 +2,6 @@
 #   - https://access.redhat.com/RegistryAuthentication
 # Find username and pass here: https://access.redhat.com/terms-based-registry/
 parameter_defaults:
-  ContainerImageRegistryLogin: true
   ContainerImageRegistryCredentials:
     registry.redhat.io:
       {{ rhregistry_user }}: {{ rhregistry_pass }}
