@@ -1,4 +1,13 @@
 ---
+- name: Pre-auth against the repo to rule out prep issues seen during testing
+  shell: |
+    podman pull registry.redhat.io/rhel8/rsyslog > /dev/null
+    if [ $? != 0 ]; then
+      podman login --username "{{ rhregistry_user }}" --password "{{ rhregistry_pass }}" registry.redhat.io
+    fi
+  tags:
+    - prepare_container_images
+
 - name: Create an environment file with repo credentials
   template:
     src: "container_overrides.yaml.j2"
@@ -8,7 +17,6 @@
     mode: '0400'
   tags:
     - prepare_container_images
-
 
 - name: Prepare container images
   shell: |

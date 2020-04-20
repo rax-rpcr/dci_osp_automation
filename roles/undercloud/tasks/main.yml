@@ -41,6 +41,8 @@
 
 - include: configuring_the_director.yml
 
+- include: validations_pre_undercloud_install.yml
+
 - include: openstack_undercloud_install.yml
 
 - include: overcloud_image_prep.yml

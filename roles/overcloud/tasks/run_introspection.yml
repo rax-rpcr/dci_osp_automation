@@ -1,0 +1,43 @@
+---
+- name: If nodes in place and 'managable', run introspection before moving to 'provide'
+  shell: |
+    . /home/stack/stackrc
+    openstack baremetal node list | grep manageable
+    if [ $? == 0 ]; then
+      echo "Running: openstack overcloud node introspect --all-manageable --provide"
+      openstack overcloud node introspect --all-manageable --provide
+    fi
+  tags:
+    - run_introspection
+
+- name: Make sure the /home/stack/introspection_data_dump dir exists
+  file:
+    name: /home/stack/introspection_data_dump/
+    state: directory
+  tags:
+    - run_introspection
+
+- name: Dump introspection data for each node.
+  shell: |
+    . /home/stack/stackrc
+    {% for curnode in ironic_nodes %}
+    if [ ! -f /home/stack/introspection_data_dump/{{ curnode.name }}.json ]; then
+      openstack baremetal introspection data save {{ curnode.name }} \
+        | python3 -m json.tool > /home/stack/introspection_data_dump/{{ curnode.name }}.json
+    fi
+    {% endfor %}
+  tags:
+    - run_introspection
+
+- name: Set profile for each node via the capabilities properly
+  shell: |
+    . /home/stack/stackrc
+    {% for curnode in ironic_nodes %}
+        openstack baremetal node show {{ curnode.name }} --fields properties | grep profile
+        if [ $? != 0 ]; then
+          openstack baremetal node set --property capabilities='profile:{{ curnode.profile }},boot_option:local,node:{{ curnode.profile }}-{{ curnode.node_index }}' {{ curnode.name }}
+        fi
+    {% endfor %}
+  tags:
+    - run_introspection
+

@@ -22,6 +22,10 @@
 
 - include: register_ironic_nodes.yml
 
+- include: validations_pre_introspection.yml
+
+- include: run_introspection.yml
+
 - include: setup_ssl_certs.yml
 
 - include: generate_templates.yml
@@ -29,5 +33,7 @@
 - include: generate_scripts.yml
 
 - include: public_endpoint_hosts.yml
+
+- include: validations_pre_deploy.yml
 
 - include: run_overcloud_deploy.yml

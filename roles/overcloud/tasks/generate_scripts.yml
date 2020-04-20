@@ -39,3 +39,12 @@
   tags:
     - generate_scripts
 
+- name: Generate the update_overcloud_plan_only.sh for overcloud deployment validations
+  template:
+    src: home_stack_scripts/update_overcloud_plan_only.sh.j2
+    dest: /home/stack/scripts/update_overcloud_plan_only.sh
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - generate_scripts

@@ -1,0 +1,10 @@
+---
+
+- name: Run the pre introspection group validations
+  shell: |
+    . /home/stack/stackrc
+    openstack tripleo validator run --validation {{ item }}
+  with_items: '{{ pre_introspection_group_validations }}'
+  tags:
+    - pre_introspection_group_validations
+

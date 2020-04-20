@@ -1,0 +1,37 @@
+---
+# At this point the ansible playbooks have been installed, but the undercloud
+# has not. We will need to do some things manually here.
+
+
+- name: Create a simple inventory file
+  copy:
+    dest: /usr/share/openstack-tripleo-validations/undercloud.ini
+    content: |
+      [undercloud]
+      localhost ansible_connection=local
+  become: True
+  tags:
+    - prep_group_validations
+
+
+- name: Create a simple ansible.cfg file to set the roles path
+  copy:
+    dest: /usr/share/openstack-tripleo-validations/ansible.cfg
+    content: |
+      [defaults]
+      roles_path = /etc/ansible/roles:/usr/share/openstack-tripleo-validations/roles
+      lookup_plugin_path = /usr/share/openstack-tripleo-validations/lookup_plugins
+      callback_plugin_path = /usr/share/openstack-tripleo-validations/callback_plugins
+      library = /usr/share/openstack-tripleo-validations/library
+  become: True
+  tags:
+    - prep_group_validations
+
+- name: Run the prep group validations
+  shell: ansible-playbook -i undercloud.ini playbooks/{{ item }}.yaml
+  args:
+    chdir: /usr/share/openstack-tripleo-validations/
+  with_items: '{{ prep_group_validations }}'
+  become: True
+  tags:
+    - prep_group_validations

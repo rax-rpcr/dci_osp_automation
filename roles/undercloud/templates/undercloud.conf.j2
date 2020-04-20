@@ -24,7 +24,7 @@ overcloud_domain_name = {{ domain_name }}
 subnets = ctlplane-subnet
  
 undercloud_admin_host = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.3
-undercloud_debug = true
+undercloud_debug = {{ enable_undercloud_debug }}
 undercloud_enable_selinux = true
 undercloud_hostname = {{ ansible_fqdn }}
 undercloud_nameservers = {{ undercloud_nameservers }}

@@ -29,3 +29,73 @@ overcloud_ntpservers:
   - 69.20.0.164
   - 69.20.0.196
 
+
+
+######################
+# tripleo-validations
+######################
+# https://docs.openstack.org/tripleo-validations/latest/readme.html
+
+# These are part of the 'prep' group that should be ran before the undercloud install.
+pre_introspection_group_validations:
+  - "check-network-gateway"           # Check network_gateway on the provisioning network
+  - "ctlplane-ip-range"               # Check the number of IP addresses available for the overcloud nodes  
+  - "dhcp-introspection"              # DHCP on the Introspection Network
+  - "undercloud-cpu"                  # Verify undercloud fits the CPU core requirements.
+  - "undercloud-disk-space"           # Verify undercloud fits the disk space requirements
+  - "undercloud-ram"                  # Verify the undercloud fits the RAM requirements.
+  - "undercloud-selinux-mode"         # Undercloud SELinux Enforcing Mode Check
+# Currently fails looking for /etc/neutron/fwaas_driver.ini which isn't in use.
+#  - "undercloud-neutron-sanity-check" # Undercloud Neutron Sanity Check
+# Currently fails due to keystone_cron container missing.
+#  - "undercloud-tokenflush"           # Verfity token_flush is enabled in keystone users crontab
+
+
+pre_deployment_group_validations:
+  - "512e"                                # Advanced format 512e support
+  - "ceph-ansible-installed"              # Check if ceph-ansible is installed on the undercloud
+  - "default-node-count"                  # Verify hypervisor statistics
+  - "dhcp-provisioning"                   # DHCP on provisioning network
+  - "dns"                                 # verify DNS
+  - "ironic-boot-configuration"           # Check ironic boot configuration
+  - "network-environment"                 # Validate heat env file for network config
+  - "node-disks"                          # Check node disk config
+  - "service-status"                      # Ensure services state
+  - "undercloud-heat-purge-deleted"       # Verify heat-manage purge_deleted is enabled in crontab
+  - "undercloud-process-count"            # Check number of openstack proceses on the undercloud
+  - "validate-selinux"                    # validate selinux
+  - "undercloud-debug"                    # Undercloud Services Debug Check
+# Looked into in bug: https://storyboard.openstack.org/#!/story/2007457
+#  - "collect-flavors-and-verify-profiles" # Collect and verify role flavors
+# This one tries to check for lvm2 delegated to group overcloud before servers are online
+#  - "ceph-dependencies-installed"         # Check if ceph dependancies are installed
+# These are not working for various reasons
+#  - "switch-vlans"                        # Compare switch port VLANs to VLANS in nic config
+#  - "ceph-pg"                             # Validate requrested ceph placement groups
+# These are not used:
+#  - "ceilometerdb-size"                  # Events db size check(depreciated)
+#  - "tls-everywhere-pre-deployment"      # Confirm undercloud is setup correctly prior to overcloud deploy
+
+post_deployment_group_validations:
+  - "ceph-health"                     # Check status of the ceph cluster
+  - "container-status"                # Ensure container status
+  - "containerized-undercloud-docker" # Verify docker containers are up and ports open
+  - "controller-token"                # Verify that keystone admin token is disabled
+  - "controller-ulimits"              # Check controller ulimits
+  - "haproxy"                         # Haproxy config check
+  - "healthcheck-service-status"      # Healthcheck systemd services check
+  - "image-serve"                     # Verify image-serve service is working and answering
+  - "mysql-open-files-limit"          # MySQL open files limit
+  - "neutron-sanity-check"            # Neutron Sanity Check
+  - "nova-event-callback"             # Nova event callback config check
+  - "ntp"                             # Verify all nodes have clock in sync
+  - "openstack-endpoints"             # Check connectivity to various openstack services
+  - "ovs-dpdk-pmd-cpus-check"         # Validate ovs dpdk pmd cores from all numa nodes
+  - "pacemaker-status"                # Check pacemaker cluster status
+  - "rabbitmq-limits"                 # Rabbitmq limit check
+  - "service-status"                  # Ensure services state
+  - "stonith-exists"                  # Validate stonith devices
+#  - "tls-everywhere-post-deployment" # Confirm overcloud nodes are setup correctly
+  - "validate-selinux"                # validate selinux
+
+

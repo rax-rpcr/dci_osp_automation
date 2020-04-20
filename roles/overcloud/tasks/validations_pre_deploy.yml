@@ -1,0 +1,19 @@
+---
+# See the following doc for details:
+#  -  https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.0/html-single/director_installation_and_usage/index#validating-the-deployment-requirements
+
+- name: Run the update_overcloud_plan_only.sh script to prep swift plan for validations
+  shell: ./scripts/update_overcloud_plan_only.sh
+  args:
+    chdir: /home/stack/
+  tags:
+    - pre_deploy_group_validations
+
+- name: Run the pre deploy group validations
+  shell: |
+    . /home/stack/stackrc
+    openstack tripleo validator run --validation {{ item }}
+  with_items: '{{ pre_deployment_group_validations }}'
+  tags:
+    - pre_deploy_group_validations
+
