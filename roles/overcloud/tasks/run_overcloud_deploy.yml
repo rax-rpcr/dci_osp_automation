@@ -16,8 +16,12 @@
   args:
     creates: /home/stack/overcloudrc
     chdir: /home/stack/
-  async: 14400
-  poll: 30
-  register: overcloud_deploy
+  until: result is not failed
+  register: result
+  retries: 3
+  delay: 300
+#  async: 14400
+#  poll: 30
+#  register: overcloud_deploy
   tags:
     - run_overcloud_deploy

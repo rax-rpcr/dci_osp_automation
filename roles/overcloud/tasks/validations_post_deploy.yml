@@ -1,0 +1,10 @@
+---
+
+- name: Run the pre deploy group validations
+  shell: |
+    . /home/stack/stackrc
+    openstack tripleo validator run --validation {{ item }}
+  with_items: '{{ post_deployment_group_validations }}'
+  tags:
+    - post_deploy_group_validations
+

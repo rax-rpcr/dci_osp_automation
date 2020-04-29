@@ -37,3 +37,5 @@
 - include: validations_pre_deploy.yml
 
 - include: run_overcloud_deploy.yml
+
+- include: validations_post_deploy.yml
