@@ -1,0 +1,32 @@
+---
+- name: Clean up the dnf cache and prime rhsm
+  shell: |
+    # clean old cruft
+    dnf clean all
+
+    # prime subscription manager after a rollback
+    # fails on a repolist without this
+    subscription-manager repos --list-enabled
+  become: True
+  tags:
+    - undercloud_registration
+
+- name: Make sure the system is registered.
+  redhat_subscription:
+    state: present
+    username: '{{ rhsm_user }}'
+    password: '{{ rhsm_pass }}'
+    pool_ids: '{{ rhsm_pool }}'
+  become: True
+  tags:
+    - undercloud_registration
+
+- name: Make sure all the required repos are in place
+  rhsm_repository:
+    name: '{{ item }}'
+    state: enabled
+  become: True
+  with_items: '{{ undercloud_repositories }}'
+  tags:
+    - undercloud_registration
+

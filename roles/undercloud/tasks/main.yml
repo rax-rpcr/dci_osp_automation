@@ -13,6 +13,7 @@
   tags:
     - always
 
+- include: undercloud_registration.yml
 
 # Redhat docs skimp on the network config
 
