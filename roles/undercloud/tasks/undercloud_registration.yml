@@ -8,6 +8,7 @@
     # fails on a repolist without this
     subscription-manager repos --list-enabled
   become: True
+  ignore_errors: True
   tags:
     - undercloud_registration
 
