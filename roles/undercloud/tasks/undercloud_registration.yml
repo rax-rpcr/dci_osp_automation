@@ -1,6 +1,9 @@
 ---
 - name: Clean up the dnf cache and prime rhsm
   shell: |
+    # Force a time sync as it can muck with the registration
+    chronyc -a 'burst 4/4'
+
     # clean old cruft
     dnf clean all
 
