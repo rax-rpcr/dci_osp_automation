@@ -19,6 +19,7 @@
     password: '{{ rhsm_pass }}'
     pool_ids: '{{ rhsm_pool }}'
   become: True
+  ignore_errors: True
   tags:
     - undercloud_registration
 
