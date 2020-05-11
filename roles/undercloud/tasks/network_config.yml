@@ -1,9 +1,8 @@
 ---
 - name: Install packages needed to roll back NetworkManager
   dnf:
-    name: "{{ item }}"
+    name: "{{ network_service_rpms }}"
     state: latest
-  with_items: "{{ network_service_rpms }}"
   become: True
   tags:
     - config_network
