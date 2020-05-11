@@ -21,6 +21,8 @@
     username: '{{ rhsm_user }}'
     password: '{{ rhsm_pass }}'
     pool_ids: '{{ rhsm_pool }}'
+    force_register: yes
+    server_insecure: yes
   become: True
   ignore_errors: True
   tags:
