@@ -1,5 +1,13 @@
 ---
 - block:
+  - name: unregister the directorvm
+    shell: |
+      subscription-manager remove --all
+      subscription-manager unregister
+      subscription-manager clean
+    delegate_to: "undercloud" 
+    become: True
+
   - name: rollback of directorvm
     shell: |
       ssh -t -t -o StrictHostKeyChecking=no dci@192.168.122.1 sudo /usr/bin/virsh snapshot-revert directorvm.$(hostname -d) directorvm_revert_snap
