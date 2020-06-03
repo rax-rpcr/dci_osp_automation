@@ -4,11 +4,11 @@
 #  tags:
 #    - run_overcloud_deploy
 
-- name: Pause for 25 minutes to give ironic time to clean the nodes after enrollement and inspection
-  pause:
-    minutes: 25
-  tags:
-    - run_overcloud_deploy
+#- name: Pause for 25 minutes to give ironic time to clean the nodes after enrollement and inspection
+#  pause:
+#    minutes: 25
+#  tags:
+#    - run_overcloud_deploy
 
 - name: Run the overcloud deployment
   shell:

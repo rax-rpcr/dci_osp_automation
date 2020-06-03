@@ -21,6 +21,6 @@
 - name: Run the ansible playbook to configure fencing from the director vm
   shell: |
     . /home/stack/stackrc
-    ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/configure_fencing.yml
+    ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/configure_fencing.yml -b
   tags:
     - configure_fencing

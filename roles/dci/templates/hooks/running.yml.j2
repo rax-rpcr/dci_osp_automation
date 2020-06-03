@@ -1,5 +1,12 @@
 ---
 - block:
+  - name: Add undercloud to inventory
+    add_host:
+      name: "undercloud"
+      ansible_fqdn: "{{ '{{' }} undercloud_ip {{ '}}' }}"
+      ansible_user: "stack"
+      ansible_host: "{{ '{{' }} undercloud_ip {{ '}}' }}"
+
   - name: unregister the directorvm
     shell: |
       subscription-manager remove --all
@@ -11,13 +18,6 @@
   - name: rollback of directorvm
     shell: |
       ssh -t -t -o StrictHostKeyChecking=no dci@192.168.122.1 sudo /usr/bin/virsh snapshot-revert directorvm.$(hostname -d) directorvm_revert_snap
-
-  - name: Add undercloud to inventory
-    add_host:
-      name: "undercloud"
-      ansible_fqdn: "{{ '{{' }} undercloud_ip {{ '}}' }}"
-      ansible_user: "stack"
-      ansible_host: "{{ '{{' }} undercloud_ip {{ '}}' }}"
 
   - name: Wait for connectivity
     wait_for_connection: 
