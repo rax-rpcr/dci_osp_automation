@@ -1,0 +1,9 @@
+DEVICE=eth1.{{ stor_mgmt_vlan }}
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR="{{ stor_mgmt_network_cidr.split('.')[0:3] | join('.') }}.20"
+# Just using this fake gw for the lab as these
+# networks are not configured on the router
+IPADDR0="{{ stor_mgmt_network_cidr.split('.')[0:3] | join('.') }}.1"
+PREFIX="{{ stor_mgmt_network_cidr.split('/')[1] }}"
+VLAN=yes

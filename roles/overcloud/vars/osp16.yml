@@ -1,5 +1,6 @@
 ---
 
+python_command: "python3"
 
 required_overcloud_repos:
   - rhel-8-for-x86_64-baseos-rpms

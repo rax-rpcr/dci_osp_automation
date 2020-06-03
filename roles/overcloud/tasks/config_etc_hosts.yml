@@ -1,0 +1,16 @@
+---
+- include: create_playbooks_dir.yml
+
+- name: Copy the /etc/hosts config playbook over
+  copy:
+    src: config_etc_hosts.yml
+    dest: /home/stack/playbooks/config_etc_hosts.yml 
+  tags:
+    - config_etc_hosts
+
+- name: Run the ansible playbook to configure /etc/hosts with overcloud nodes
+  shell: |
+    . /home/stack/stackrc
+    ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/config_etc_hosts.yml
+  tags:
+    - config_etc_hosts

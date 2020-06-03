@@ -1,0 +1,25 @@
+{# Namespaces are not available with the dci host as it uses an older version of jinja2. #}
+{# This leads us to use some... creative solutions to working with a global dict in a loop #}
+{% set curdata = {
+  'compute_count': 0,
+  'control_count': 0,
+  'ceph_count': 0,
+} %}
+{% for ironicnode in ironic_nodes %}
+{% if ironicnode['role'] == "Compute" %}
+{% set trash = curdata.update({'compute_count': curdata['compute_count'] + 1}) %}
+{% endif %}
+{% if ironicnode['role'] == "Controller" %}
+{% set trash = curdata.update({'control_count': curdata['control_count'] + 1}) %}
+{% endif %}
+{% if ironicnode['role'] == "CephStorage" %}
+{% set trash = curdata.update({'ceph_count': curdata['ceph_count'] + 1}) %}
+{% endif %}
+{% endfor %}
+parameter_defaults:
+
+  # Set up the counts for each
+  ControllerCount: {{ curdata['control_count'] }}
+  ComputeCount: {{ curdata['compute_count'] }}
+  CephStorageCount: {{ curdata['ceph_count'] }}
+

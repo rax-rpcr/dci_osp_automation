@@ -1,0 +1,7 @@
+---
+- name: Run the /home/stack/scripts/container_image_prepare.sh script
+  shell: stdbuf -i0 -e0 -o0 /home/stack/scripts/container_image_prepare.sh | tee /home/stack/container_image_prepare.log
+  args:
+    creates: /home/stack/templates/01-overcloud-images.yaml
+  tags:
+  - container_image_prepare

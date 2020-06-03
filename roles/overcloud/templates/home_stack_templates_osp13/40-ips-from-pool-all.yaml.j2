@@ -1,0 +1,59 @@
+{# Namespaces are not available with the dci host as it uses an older version of jinja2. #}
+{# This leads us to use some... creative solutions to working with a global dict in a loop #}
+{% set curdata = {
+  'compute_profile': "compute",
+  'control_profile': "control",
+  'ceph_profile': "ceph-storage",
+} %}
+{% for ironicnode in ironic_nodes %}
+{% if ironicnode['role'] == "Compute" %}
+{% set trash = curdata.update({'compute_profile': ironicnode['profile']}) %}
+{% endif %}
+{% if ironicnode['role'] == "Controller" %}
+{% set trash = curdata.update({'control_profile': ironicnode['profile']}) %}
+{% endif %}
+{% if ironicnode['role'] == "CephStorage" %}
+{% set trash = curdata.update({'ceph_profile': ironicnode['profile']}) %}
+{% endif %}
+{% endfor %}
+# Make sure we don't use undercloud neutron for the external ip allocation
+resource_registry:
+  OS::TripleO::Controller::Ports::ExternalPort: /usr/share/openstack-tripleo-heat-templates/network/ports/external_from_pool.yaml
+
+
+parameter_defaults:
+
+  # Make sure the Flavors match the profile capability set on the nodes
+  OvercloudControllerFlavor: {{ curdata['control_profile'] }}
+  OvercloudComputeFlavor: {{ curdata['compute_profile'] }}
+  OvercloudCephStorageFlavor: {{ curdata['ceph_profile'] }}
+
+  # Map ironic node capabilities 'ex: capabilities:node:controller-0' to scheduler hints for each.
+  # This will cause say ironic node with node:control-0 capability to instance overcloud-controller-0 (stack_name-role-index)
+  ControllerSchedulerHints:
+    'capabilities:node': '{{ curdata['control_profile'] }}-%index%'
+  ComputeSchedulerHints:
+    'capabilities:node': '{{ curdata['compute_profile'] }}-%index%'
+  CephStorageSchedulerHints:
+    'capabilities:node': '{{ curdata['ceph_profile'] }}-%index%'
+
+  # Now we can set up the hostname map for each based on the osp standard hostname(stack_name-role-index)
+  HostnameMap:
+{% for ironicnode in ironic_nodes %}
+{% if ironicnode['role'] == "Compute" %}
+    overcloud-{{ ironicnode['role'] | lower }}-{{ ironicnode['node_index'] }}: {{ ironicnode['name'].split('.')[0] }}
+{% else %}
+    overcloud-{{ ironicnode['role'] | lower }}-{{ ironicnode['node_index'] }}: {{ ironicnode['name'].split('.')[0] }}
+{% endif %}
+{% endfor %}
+
+{% if lab_network_environment == "phobos_ironic_on_ironic" %}
+  # In this environment we have allocated some external network ips for each of the controllers.
+  # This is a shared network that needed some manually assigned ips as dhcp wasn't allowed.
+  ControllerIPs:
+    external: 
+{% for external_ip in external_controller_ips %}
+      - {{ external_ip }}
+{% endfor %}
+{% endif %}
+

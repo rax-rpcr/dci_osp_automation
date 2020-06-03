@@ -1,0 +1,7 @@
+---
+- name: Update the octavia quotas
+  shell: |
+    . /home/stack/overcloudrc
+    openstack quota set --cores "-1" --instances "-1" --ram "-1" --server-groups "5000" --server-group-members "50" --gigabytes "30000" --volumes "10000" --secgroups "-1" --ports "-1" --secgroup-rules "-1" service
+  tags:
+    - update_octavia_quotas

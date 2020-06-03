@@ -1,17 +1,12 @@
 ---
-- name: Clean up the dnf cache and prime rhsm
+- name: Force a time sync
   shell: |
     # Force a time sync as it can muck with the registration
+    systemctl restart chronyd
+    sleep 5
     chronyc -a 'burst 4/4'
 
-    # clean old cruft
-    dnf clean all
-
-    # prime subscription manager after a rollback
-    # fails on a repolist without this
-    subscription-manager repos --list-enabled
   become: True
-  ignore_errors: True
   tags:
     - undercloud_registration
 
@@ -21,7 +16,7 @@
     username: '{{ rhsm_user }}'
     password: '{{ rhsm_pass }}'
     pool_ids: '{{ rhsm_pool }}'
-    force_register: yes
+#    force_register: yes
     server_insecure: yes
   become: True
   ignore_errors: True

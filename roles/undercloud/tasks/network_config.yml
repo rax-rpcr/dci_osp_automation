@@ -1,9 +1,10 @@
 ---
 - name: Install packages needed to roll back NetworkManager
-  dnf:
+  yum:
     name: "{{ network_service_rpms }}"
     state: latest
   become: True
+  when: "dci_topic | lower == 'osp16'"
   tags:
     - config_network
 
@@ -137,5 +138,24 @@
   tags:
     - config_network
 
+- name: Set up vlan interface for the stor_mgmt network
+  template:
+    src: "network-scripts/ifcfg-stor_mgmt.j2"
+    dest: "/etc/sysconfig/network-scripts/ifcfg-eth1.{{ stor_mgmt_vlan }}"
+    mode: '0644'
+    owner: "root"
+    group: "root"
+  become: True
+  tags:
+    - config_network
 
+- name: Bring the stor_mgmt vlan interface up if needed
+  shell: |
+    ip -d link show dev eth1 | grep "{{ stor_mgmt_network_cidr.split('.')[0:3] | join('.') }}.20"
+    if [ $? != 0 ]; then
+      ifup eth1.{{ stor_mgmt_vlan }}
+    fi
+  become: True
+  tags:
+    - config_network
 

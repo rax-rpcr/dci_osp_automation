@@ -1,0 +1,17 @@
+---
+- name: copy the script over to the undercloud
+  copy:
+    src: gen_openstacksdk_config.sh
+    dest: /home/stack/scripts/gen_openstacksdk_config.sh
+    owner: stack
+    group: stack
+    mode: 0750
+  tags:
+    - gen_openstacksdk_config
+
+- name: Run the script to generate the /home/stack/.config/openstack/clouds.yaml file
+  shell: /home/stack/scripts/gen_openstacksdk_config.sh
+  args:
+    creates: /home/stack/.config/openstack/clouds.yaml
+  tags:
+    - gen_openstacksdk_config

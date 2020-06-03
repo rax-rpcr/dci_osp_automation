@@ -1,0 +1,82 @@
+#!/bin/bash
+
+. /home/stack/overcloudrc
+
+
+# Create the external network
+openstack network show ext-net > /dev/null
+if [ $? != 0 ]; then
+  echo "Creating network ext-net"
+  openstack network create ext-net \
+      --external \
+      --provider-network-type vlan \
+      --provider-physical-network datacentre \
+      --provider-segment {{ gw_net_vlan }}
+else
+  echo "Network ext-net exists"
+fi
+
+# Create the external network subnet
+openstack subnet show ext-subnet > /dev/null
+if [ $? != 0 ]; then
+  echo "Creating subnet ext-subnet"
+  openstack subnet create ext-subnet \
+      --network ext-net \
+      --allocation-pool start={{ gw_net_dhcp_from }},end={{ gw_net_dhcp_to }} \
+      --gateway {{ gw_net_gateway }} \
+      --subnet-range {{ gw_net_network_cidr }} \
+      --dns-nameserver 8.8.8.8 \
+      --dns-nameserver 8.8.4.4 \
+      --dhcp
+else
+  echo "Subnet ext-subnet exists"
+fi
+
+
+
+# Create the internal network
+openstack network show int-net > /dev/null
+if [ $? != 0 ]; then
+  echo "Creating network int-net"
+  openstack network create int-net \
+      --provider-network-type vlan \
+      --provider-physical-network datacentre \
+      --provider-segment {{ inside_net_vlan }}
+else
+  echo "Network int-net exists"
+fi
+
+# Create the internal network subnet
+openstack subnet show int-subnet > /dev/null
+if [ $? != 0 ]; then
+  echo "Creating subnet int-subnet"
+  openstack subnet create int-subnet \
+      --network int-net \
+      --allocation-pool start={{ inside_net_dhcp_from }},end={{ inside_net_dhcp_to }} \
+      --gateway {{ inside_net_gateway }} \
+      --subnet-range {{ inside_net_network_cidr }} \
+      --dns-nameserver 8.8.8.8 \
+      --dns-nameserver 8.8.4.4 \
+      --dhcp
+else
+  echo "Subnet int-subnet exists"
+fi
+
+
+# Create a router between int-net and ext-net
+openstack router show my-router > /dev/null
+if [ $? != 0 ]; then
+  openstack router create my-router
+  openstack router add subnet my-router int-subnet
+  openstack router set my-router --external-gateway ext-net
+fi
+
+
+# Create the rpcr security group
+openstack security group show rpcr > /dev/null
+if [ $? != 0 ]; then
+  openstack security group create rpcr
+  openstack security group rule create --ingress --protocol icmp --remote-ip 0.0.0.0/0 rpcr
+  openstack security group rule create --ingress --protocol tcp --dst-port 22:22 --remote-ip 0.0.0.0/0 rpcr
+  openstack security group rule create --ingress --protocol tcp --dst-port 443:443 --remote-ip 0.0.0.0/0 rpcr
+fi

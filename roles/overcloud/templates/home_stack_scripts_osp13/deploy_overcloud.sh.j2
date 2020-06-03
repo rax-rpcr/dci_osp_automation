@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Source the '-e' environment args
+. /home/stack/scripts/environment_args
+
+# Source the undercloud rc fil
+. /home/stack/stackrc
+
+# Deploy the overcloud
+openstack overcloud deploy \
+    --templates \
+    --roles-file /home/stack/templates/roles/roles_data.yaml \
+{% if enable_manila %}
+    -n /usr/share/openstack-tripleo-heat-templates/network_data_ganesha.yaml \
+{% endif %}
+    $ENVIRONMENT_ARGS \
+    --ntp-server {{ overcloud_ntpservers | join (',') }}

@@ -1,7 +1,7 @@
 ---
 
 - name: Install the latest overcloud and ironic agent glance image packages.
-  dnf:
+  yum:
     name: '{{ item }}'
     state: latest
   with_items: '{{ overcloud_image_pkg_names }}'

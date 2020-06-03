@@ -1,0 +1,17 @@
+---
+- name: Copy the script to /home/stack/scripts/overcloud_network.sh
+  template:
+    src: overcloud_network.sh.j2
+    dest: /home/stack/scripts/overcloud_network.sh 
+    owner: stack
+    group: stack
+    mode: 0750
+  tags:
+    - overcloud_network
+
+- name: Run the script
+  shell: /home/stack/scripts/overcloud_network.sh 
+  tags:
+    - overcloud_network
+
+

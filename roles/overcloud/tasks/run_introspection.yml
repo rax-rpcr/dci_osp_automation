@@ -23,7 +23,7 @@
     {% for curnode in ironic_nodes %}
     if [ ! -f /home/stack/introspection_data_dump/{{ curnode.name }}.json ]; then
       openstack baremetal introspection data save {{ curnode.name }} \
-        | python3 -m json.tool > /home/stack/introspection_data_dump/{{ curnode.name }}.json
+        | {{ python_command }} -m json.tool > /home/stack/introspection_data_dump/{{ curnode.name }}.json
     fi
     {% endfor %}
   tags:

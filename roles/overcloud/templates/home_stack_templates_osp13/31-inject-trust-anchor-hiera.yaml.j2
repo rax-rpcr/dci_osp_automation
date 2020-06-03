@@ -1,0 +1,10 @@
+# Following upstream docs here:
+# https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.0/html/advanced_overcloud_customization/sect-enabling_ssltls_on_the_overcloud
+parameter_defaults:
+  CAMap:
+    undercloud-ca:
+      content: |
+        {{ director_ca_cert | indent(width=8) }}
+    overcloud-ca:
+      content: |
+        {{ director_ca_cert | indent(width=8) }}

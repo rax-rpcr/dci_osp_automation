@@ -23,19 +23,46 @@
 - include: register_ironic_nodes.yml
 
 - include: validations_pre_introspection.yml
+  when: "dci_topic | lower == 'osp16'"
 
 - include: run_introspection.yml
 
 - include: setup_ssl_certs.yml
 
 - include: generate_templates.yml
+  when: "dci_topic | lower == 'osp16'"
+
+- include: generate_templates_osp13.yml
+  when: "dci_topic | lower == 'osp13'"
 
 - include: generate_scripts.yml
+  when: "dci_topic | lower == 'osp16'"
+
+- include: generate_scripts_osp13.yml
+  when: "dci_topic | lower == 'osp13'"
 
 - include: public_endpoint_hosts.yml
 
 - include: validations_pre_deploy.yml
+  when: "dci_topic | lower == 'osp16'"
+
+- include: container_image_prepare_osp13.yml
+  when: "dci_topic | lower == 'osp13'"
 
 - include: run_overcloud_deploy.yml
 
 - include: validations_post_deploy.yml
+  when: "dci_topic | lower == 'osp16'"
+
+# Post configuration steps below
+- include: configure_fencing.yml
+
+- include: config_etc_hosts.yml
+
+- include: update_octavia_quotas.yml
+
+- include: generate_openstacksdk_config.yml
+
+- include: overcloud_network.yml
+
+- include: add_exnet_masquerade.yml

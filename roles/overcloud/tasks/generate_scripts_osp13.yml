@@ -1,0 +1,50 @@
+---
+- name: Create /home/stack/scripts
+  file:
+    state: directory
+    path: /home/stack/scripts
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - generate_scripts
+
+- name: Generate the environment_args for ordering environment arguments
+  template:
+    src: home_stack_scripts_{{ dci_topic | lower }}/environment_args.j2
+    dest: /home/stack/scripts/environment_args
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - generate_scripts
+
+- name: Generate the deploy_overcloud.sh for overcloud deployment
+  template:
+    src: home_stack_scripts_{{ dci_topic | lower }}/deploy_overcloud.sh.j2
+    dest: /home/stack/scripts/deploy_overcloud.sh
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - generate_scripts
+
+- name: Generate the container_image_prepare.sh for overcloud image prep
+  template:
+    src: home_stack_scripts_{{ dci_topic | lower }}/container_image_prepare.sh.j2
+    dest: /home/stack/scripts/container_image_prepare.sh
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - generate_scripts
+
+- name: Generate the update_overcloud_plan_only.sh for overcloud deployment validations
+  template:
+    src: home_stack_scripts_{{ dci_topic | lower }}/update_overcloud_plan_only.sh.j2
+    dest: /home/stack/scripts/update_overcloud_plan_only.sh
+    owner: stack
+    group: stack
+    mode: '0750'
+  tags:
+    - generate_scripts

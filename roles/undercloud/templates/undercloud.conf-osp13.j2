@@ -1,0 +1,30 @@
+# based on https://one.rackspace.com/display/OPC/Director+Build+on+RHEL7 docs
+[DEFAULT]
+local_ip = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1/{{ ironic_provisioning_network.split('/')[1] }}
+undercloud_public_host = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.2
+undercloud_admin_host = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.3
+undercloud_nameservers = {{ undercloud_nameservers }}
+undercloud_ntp_servers = {{ undercloud_ntp_servers }}
+overcloud_domain_name = {{ domain_name }}
+subnets = ctlplane-subnet
+local_subnet = ctlplane-subnet
+undercloud_service_certificate = {{ haproxy_ssl_cert }}
+local_interface = {{ undercloud_local_interface }}
+local_mtu = {{ undercloud_local_mtu }}
+inspection_interface = br-ctlplane
+clean_nodes = True
+enabled_drivers = pxe_ipmitool
+{% if enable_pci -%}
+hieradata_override = /home/stack/{{ undercloud_hiera_overrides_file }}
+{% endif %}
+{% if enable_self_signed_certs %}
+generate_service_certificate = false
+{% endif %}
+[auth]
+[ctlplane-subnet]
+cidr = {{ ironic_provisioning_network }}
+dhcp_start = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.5
+dhcp_end = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.24
+inspection_iprange = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.100,{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.120
+gateway = {{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1
+masquerade = true

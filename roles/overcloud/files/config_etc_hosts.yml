@@ -1,0 +1,16 @@
+---
+- name: Update /etc/hosts with the overcloud information
+  hosts: localhost
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Loop through all of the overcloud hosts and update /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        regexp: "^{{ hostvars[item]['ansible_host'] }}"
+        line: "{{ hostvars[item]['ansible_host'] }} {{ item }}"
+        state: present
+      loop: "{{ groups['overcloud'] }}"
+      tags:
+        - update_etc_hosts
+

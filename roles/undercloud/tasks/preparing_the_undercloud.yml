@@ -28,7 +28,7 @@
 # Skipping registration done via cloud-init
 
 - name: Update and reboot if needed.
-  dnf:
+  yum:
     name: "*"
     state: latest
     update_cache: yes
@@ -46,8 +46,8 @@
     - undercloud_prep
 
 
-- name: Install python3-tripleoclient package
-  dnf:
+- name: Install python tripleoclient package
+  yum:
     name: '{{ tripleoclient_pkg_name }}'
     update_cache: yes
     state: present

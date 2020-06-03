@@ -1,0 +1,84 @@
+
+# Point to our custom network configuration configs for each role.
+resource_registry:
+  OS::TripleO::Compute::Net::SoftwareConfig: /home/stack/templates/custom-nics/compute.yaml
+  OS::TripleO::Controller::Net::SoftwareConfig: /home/stack/templates/custom-nics/controller.yaml
+  OS::TripleO::CephStorage::Net::SoftwareConfig: /home/stack/templates/custom-nics/ceph-storage.yaml
+
+# Start laying out the general network info used by the custom network 
+# configs.
+parameter_defaults:
+
+  # Control plane related settings
+  ControlPlaneSubnetCidr: "{{ ironic_provisioning_network.split('/')[1] }}"
+  ControlPlaneDefaultRoute: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1"
+  EC2MetadataIp: "{{ ironic_provisioning_network.split('.')[0:3] | join('.') }}.1"
+
+  # External network related settings
+  ExternalNetCidr: "{{ external_network_cidr }}"
+  ExternalAllocationPools: [{'start': '{{ external_network_cidr.split('.')[0:3] | join('.') }}.40', 'end': '{{ external_network_cidr.split('.')[0:3] | join('.') }}.55'}]
+  ExternalInterfaceDefaultRoute: "{{ external_network_gateway }}"
+  PublicVirtualFixedIPs: [{'ip_address':'{{ external_floating_ip }}'}]
+
+  # Internal network related settings
+  InternalApiNetCidr: "{{ internal_network_cidr }}"
+  InternalApiNetworkVlanID: "{{ internal_vlan }}"
+  InternalApiAllocationPools: [{'start': '{{ internal_dhcp_from }}', 'end': '{{ internal_dhcp_to }}'}]
+  InternalApiVirtualFixedIPs: [{'ip_address':'{{ internal_floating_ip }}'}]
+
+  # Storage network related settings
+  StorageNetCidr: "{{ storage_network_cidr }}"
+  StorageNetworkVlanID: "{{ storage_vlan }}"
+  StorageAllocationPools: [{'start': '{{ storage_dhcp_from }}', 'end': '{{ storage_dhcp_to }}'}]
+
+  # Storage management network related settings
+  StorageMgmtNetCidr: "{{ stor_mgmt_network_cidr }}"
+  StorageMgmtNetworkVlanID: "{{ stor_mgmt_vlan }}"
+  StorageMgmtAllocationPools: [{'start': '{{ stor_mgmt_dhcp_from }}', 'end': '{{ stor_mgmt_dhcp_to }}'}]
+
+{% if enable_manila %}
+  # Manilla network related settings
+  StorageNFSNetCidr: "{{ manilla_network_cidr }}"
+  StorageNFSNetworkVlanID: "{{ manilla_vlan }}"
+  StorageNFSAllocationPools: [{'start': '{{ manilla_dhcp_from }}', 'end': '{{ manilla_dhcp_to }}'}]
+{% endif %}
+
+  # VXLAN/GRE network for neutron private networks
+  TenantNetCidr: "{{ tenant_network_cidr }}"
+  TenantNetworkVlanID: "{{ tenant_vlan }}"
+  TenantAllocationPools: [{'start': '{{ tenant_dhcp_from }}', 'end': '{{ tenant_dhcp_to }}'}]
+
+  # Overcloud dns servers
+  DnsServers:
+{% for nameserver in overcloud_nameservers %}
+  - {{ nameserver }}
+{% endfor %}
+
+  # Dns name used for the overcloud services
+  CloudName: openstack.{{ domain_name }}
+
+  # Neutron allowed type and tunneling settings
+  NeutronNetworkType: 'vxlan,vlan'
+  NeutronTunnelTypes: 'vxlan'
+
+  # Bonding mode
+  BondInterfaceOvsOptions: "mode=active-backup"
+
+  # Update network on deployment if needed. After testing
+  # This should probably be only "Create" which is the 
+  # default.
+  # NetworkDeploymentActions: ['CREATE','UPDATE']
+
+{% if enable_pci %}
+  # OSP will set this to the provisioning network to allow keystone changes
+  # during the deployment as it doesn't normally have access to the internal
+  # api network. The security team didn't like this, so we now set up a
+  # vlan interface on the directory vm for the internal network.  This setting
+  # makes the admin api for keystone point to the internal network floating
+  # ip. 
+  # The ironic api setting was pulled from the osp13 wiki(not sure on the background of that setting)
+  ServiceNetMap:
+    KeystoneAdminApiNetwork: internal_api
+    IronicApiNetwork: internal_api
+{% endif %}
+

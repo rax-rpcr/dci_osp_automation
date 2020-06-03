@@ -1,0 +1,26 @@
+---
+- include: create_playbooks_dir.yml
+
+- name: Create a fencing script with available data
+  template:
+    src: configure_fencing.sh.j2
+    dest: /home/stack/playbooks/configure_fencing.sh
+    owner: stack
+    group: stack
+    mode: 0750
+  tags:
+    - configure_fencing
+
+- name: Copy the fencing playbook over
+  copy:
+    src: configure_fencing.yml
+    dest: /home/stack/playbooks/configure_fencing.yml 
+  tags:
+    - configure_fencing
+
+- name: Run the ansible playbook to configure fencing from the director vm
+  shell: |
+    . /home/stack/stackrc
+    ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/configure_fencing.yml
+  tags:
+    - configure_fencing

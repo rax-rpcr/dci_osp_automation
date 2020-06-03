@@ -11,20 +11,16 @@ unset ENVIRONMENT_ARGS
 #  - Hostname mapping
 #  - Static ip addressing 
 #######################################################
-ENVIRONMENT_ARGS="-e /home/stack/templates/node-info.yaml"
+ENVIRONMENT_ARGS="-e /home/stack/templates/00-node-info.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/40-ips-from-pool-all.yaml"
 
 
 #######################################################
-# Container Podman/Docker image related
-#  - containers-prepare-parameter.yaml: Created during
-#       undercloud install.  New way of working with
-#       container images.
-#  - container_overrides.yaml: Redhat creds for repo
-#       access.    
+# Container Docker image related
 #######################################################
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/containers-prepare-parameter.yaml"
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/container_overrides.yaml"
-
+if [[ ! "$0" =~ "image_prepare" ]]; then
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/01-overcloud-images.yaml"
+fi
 
 #######################################################
 # network-isolation.yaml
@@ -40,7 +36,7 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templ
 #    configs.
 #  - Used in network isolation config templates
 #######################################################
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/network-environment.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/20-network-environment.yaml"
 
 
 #######################################################
@@ -48,7 +44,7 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/network-environme
 #  - enable high availability of the controller services using pacemaker.
 #  - https://docs.openstack.org/project-deploy-guide/tripleo-docs/latest/features/high_availability.html
 #######################################################
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/docker-ha.yaml"
+#ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/docker-ha.yaml"
 
 
 #######################################################
@@ -56,14 +52,14 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templ
 #   - Inject the undercloud CA certificate into the 
 #     overcloud node trust.
 #######################################################
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/inject-trust-anchor-hiera.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/31-inject-trust-anchor-hiera.yaml"
 
 {% if enable_self_signed_certs %}
 #######################################################
 # enable-tls.yaml
 #   - Enable tls on overcloud public endpoints.
 #######################################################
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/enable-tls.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/33-enable-tls.yaml"
 ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/ssl/tls-endpoints-public-dns.yaml"
 {% endif %}
 
@@ -72,7 +68,7 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templ
 # octavia.yaml
 #   - Enable octavia load balancers
 #######################################################
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/octavia.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/55-octavia.yaml"
 {% endif %}
 
 
@@ -82,26 +78,26 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/octavia.yaml"
 # ceph-ansible.yaml
 #   - Enable Ceph
 #######################################################
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/ceph-ansible.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/50-ceph-ansible.yaml"
 
 #######################################################
 # ceph-config.yaml
 #   - Configure ceph-ansible cluster
 #   - Last of the ceph files  to override defaults
 #######################################################
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/ceph-config.yaml"
-
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/51-ceph-config.yaml"
 
 #######################################################
 # Enable ceph rados gw to act as object storage
 #######################################################
-ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-rgw.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/52-ceph-rgw.yaml"
 
 {% if enable_manila %}
 #######################################################
 # Enable ceph mds if manila is anbled
 #######################################################
 ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/ceph-ansible/ceph-mds.yaml"
+
 
 #######################################################
 # manila.yaml

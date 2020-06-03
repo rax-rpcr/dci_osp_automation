@@ -1,0 +1,10 @@
+---
+- name: Running ansible playbook to configure fencing
+  hosts: Controller
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Run /home/stack/playbooks/configure_fencing.sh on first controller
+      script: /home/stack/playbooks/configure_fencing.sh
+      run_once: true
+

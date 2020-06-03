@@ -1,0 +1,10 @@
+---
+- name: Create a playbooks dir to throw any post configuration playbooks in
+  file:
+    path: /home/stack/playbooks
+    state: directory
+    owner: stack
+    group: stack
+    mode: 0755
+  tags:
+    - always

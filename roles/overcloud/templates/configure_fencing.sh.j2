@@ -1,0 +1,28 @@
+#!/bin/bash
+
+
+{% for ironicnode in ironic_nodes %}
+{% if ironicnode['role'] == "Controller" %}
+
+pcs stonith show my-ipmilan-for-controller0{{ ironicnode['node_index'] }}
+if [ $? != 0 ]; then
+  pcs stonith create my-ipmilan-for-controller0{{ ironicnode['node_index'] }} fence_ipmilan pcmk_host_list=controller0{{ ironicnode['node_index'] + 1 }} \
+    ipaddr={{ ironicnode['pm_addr'] }} login={{ ironicnode['pm_user'] }} passwd={{ ironicnode['pm_password'] }} lanplus=1 cipher=1 op monitor interval=60s
+fi
+
+pcs constraint location show resources my-ipmilan-for-controller0{{ ironicnode['node_index'] }} | grep "controller0{{ ironicnode['node_index'] + 1 }}"
+if [ $? != 0 ]; then
+  pcs constraint location my-ipmilan-for-controller0{{ ironicnode['node_index'] }} avoids controller0{{ ironicnode['node_index'] + 1 }}
+fi
+{% endif %}
+{% endfor %}
+
+
+pcs property show stonith-enabled | grep 'stonith-enabled: false'
+if [ $? == 0 ]; then
+  pcs property set stonith-enabled=true 
+fi
+
+pcs stonith show
+
+

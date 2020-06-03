@@ -1,5 +1,7 @@
 ---
 
+# These templates are based off of https://one.rackspace.com/display/OPC/OSP13+Deployment+Guide
+
 - name: Pull the undercloud ca cert into a variable for use in the templates
   slurp:
     src: "/etc/pki/ca-trust/source/anchors/director-ca.crt"
@@ -62,12 +64,13 @@
 
 - name: Set up the /home/stack/templates/<envfile>.yaml environment files
   template:
-    src: home_stack_templates/{{ item }}.yaml.j2
+    src: home_stack_templates_{{ dci_topic | lower }}/{{ item }}.yaml.j2
     dest: /home/stack/templates/{{ item }}.yaml
   with_items:
-    - "node-info"
-    - "inject-trust-anchor-hiera"
-    - "network-environment"
+    - "00-node-info"
+    - "31-inject-trust-anchor-hiera"
+    - "20-network-environment"
+    - "40-ips-from-pool-all"
   tags:
     - overcloud_env_templates
 
@@ -83,7 +86,7 @@
 
 - name: Copy all of the environment specific nic configs over
   template:
-    src: home_stack_templates/{{ lab_network_environment }}-custom-nics/{{ item }}.yaml
+    src: home_stack_templates_{{ dci_topic | lower }}/{{ lab_network_environment }}-custom-nics/{{ item }}.yaml
     dest: /home/stack/templates/custom-nics/{{ item }}.yaml
     owner: stack
     group: stack
@@ -108,7 +111,7 @@
 
 - name: Generate the /home/stack/roles_data.yaml file
   template:
-    src: home_stack_templates/roles/roles_data.yaml
+    src: home_stack_templates_{{ dci_topic | lower }}/roles/roles_data.yaml
     dest: /home/stack/templates/roles/roles_data.yaml
     owner: stack
     group: stack
@@ -117,36 +120,44 @@
     - overcloud_env_templates
 
 
-- name: Set up the /home/stack/templates/enable-tls.yaml environment file
+- name: Set up the /home/stack/templates/33-enable-tls.yaml environment file
   template:
-    src: home_stack_templates/enable-tls.yaml.j2
-    dest: /home/stack/templates/enable-tls.yaml
+    src: home_stack_templates_{{ dci_topic | lower }}/33-enable-tls.yaml.j2
+    dest: /home/stack/templates/33-enable-tls.yaml
   when: enable_self_signed_certs
   # we can add another here when testing user provided certs later on
   tags:
     - overcloud_env_templates
 
 
-- name: Set up the /home/stack/templates/octavia.yaml environment file
+- name: Set up the /home/stack/templates/55-octavia.yaml environment file
   template:
-    src: home_stack_templates/octavia.yaml.j2
-    dest: /home/stack/templates/octavia.yaml
+    src: home_stack_templates_{{ dci_topic | lower }}/55-octavia.yaml.j2
+    dest: /home/stack/templates/55-octavia.yaml
   when: enable_octavia
   tags:
     - overcloud_env_templates
 
-- name: Set up the /home/stack/templates/ceph-ansible.yaml environment file
+- name: Set up the /home/stack/templates/50-ceph-ansible.yaml environment file
   template:
-    src: home_stack_templates/ceph-ansible.yaml.j2
-    dest: /home/stack/templates/ceph-ansible.yaml
+    src: home_stack_templates_{{ dci_topic | lower }}/50-ceph-ansible.yaml.j2
+    dest: /home/stack/templates/50-ceph-ansible.yaml
   when: enable_ceph
   tags:
     - overcloud_env_templates
 
-- name: Set up the /home/stack/templates/ceph-config.yaml environment file
+- name: Set up the /home/stack/templates/51-ceph-config.yaml environment file
   template:
-    src: home_stack_templates/{{ lab_ceph_config }}-ceph-config.yaml.j2
-    dest: /home/stack/templates/ceph-config.yaml
+    src: home_stack_templates_{{ dci_topic | lower }}/{{ lab_ceph_config }}-51-ceph-config.yaml.j2
+    dest: /home/stack/templates/51-ceph-config.yaml
+  when: enable_ceph
+  tags:
+    - overcloud_env_templates
+
+- name: Set up the /home/stack/templates/52-ceph-rgw.yaml environment file
+  template:
+    src: home_stack_templates_{{ dci_topic | lower }}/52-ceph-rgw.yaml.j2
+    dest: /home/stack/templates/52-ceph-rgw.yaml
   when: enable_ceph
   tags:
     - overcloud_env_templates

@@ -10,7 +10,7 @@
     - install_ceph_ansible
 
 - name: Install ceph ansible package
-  dnf:
+  yum:
     name: '{{ ceph_ansible_pkg_name }}'
     state: present
   become: True

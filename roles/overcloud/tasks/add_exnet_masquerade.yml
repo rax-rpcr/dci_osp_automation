@@ -1,0 +1,20 @@
+---
+- name: Create a quick script to add it quickly
+  copy:
+    dest: /home/stack/scripts/add_ex-net_masquerade.sh
+    content: |
+      /sbin/iptables -n -L -t nat | grep "{{ gw_net_network_cidr }}"
+      if [ $? != 0 ]; then
+        /sbin/iptables -t nat -A POSTROUTING -s {{ gw_net_network_cidr }} -o eth0 -j MASQUERADE
+      fi
+    owner: stack
+    group: stack
+    mode: 0750
+  tags:
+    - add_exnet_masquerade
+
+- name: Run the script
+  shell: /home/stack/scripts/add_ex-net_masquerade.sh
+  become: true
+  tags:
+    - add_exnet_masquerade

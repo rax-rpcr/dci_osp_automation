@@ -1,0 +1,31 @@
+---
+
+tripleoclient_pkg_name: python-tripleoclient
+
+ceph_tools_repo: "rhel-7-server-rhceph-3-tools-rpms"
+ceph_ansible_pkg_name: "ceph-ansible"
+
+overcloud_image_pkg_names:
+  - rhosp-director-images
+  - rhosp-director-images-ipa-x86_64-13.0-20191031.1.el7ost
+# the latest 3 ipa package images are buggy when it comes to pulling a mac address lookup
+# resulting in many clean failures. We are locking it down to a solid version.
+#   - rhosp-director-images-ipa
+
+overcloud_glance_image_files:
+  - /usr/share/rhosp-director-images/overcloud-full-latest-13.0.tar
+  - /usr/share/rhosp-director-images/ironic-python-agent-13.0-20191031.1.el7ost.x86_64.tar
+#  - /usr/share/rhosp-director-images/ironic-python-agent-latest-13.0.tar
+
+undercloud_repositories:
+  - "rhel-7-server-rpms"
+  - "rhel-7-server-extras-rpms"
+  - "rhel-7-server-rh-common-rpms"
+  - "rhel-7-server-satellite-tools-6.3-rpms"
+  - "rhel-ha-for-rhel-7-server-rpms"
+  - "rhel-7-server-openstack-13-deployment-tools-rpms"
+  - "rhel-7-server-openstack-13-rpms"
+#  - "rhel-7-server-rhceph-3-osd-rpms"
+#  - "rhel-7-server-rhceph-3-mon-rpms"
+#  - "rhel-7-server-rhceph-3-tools-rpms"
+#  - rhel-7-server-nfv-rpms
