@@ -18,9 +18,15 @@
   tags:
     - configure_fencing
 
+- name: Pause for 1 minute to give ironic time to clean the nodes after enrollement and inspection
+  pause:
+    minutes: 1
+  tags:
+    - configure_fencing
+
 - name: Run the ansible playbook to configure fencing from the director vm
   shell: |
     . /home/stack/stackrc
-    ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/configure_fencing.yml -b
+    stdbuf -i0 -e0 -o0 ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/configure_fencing.yml -b | tee configure_fencing.log
   tags:
     - configure_fencing

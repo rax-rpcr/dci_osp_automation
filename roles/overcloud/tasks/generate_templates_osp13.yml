@@ -161,3 +161,14 @@
   when: enable_ceph
   tags:
     - overcloud_env_templates
+
+- name: Set up the /home/stack/templates/60-rackspace-tuning.yaml environment file
+  template:
+    src: home_stack_templates_{{ dci_topic | lower }}/60-rackspace-tuning.yaml.j2
+    dest: /home/stack/templates/60-rackspace-tuning.yaml
+  when: enable_ceph
+  tags:
+    - overcloud_env_templates
+
+
+

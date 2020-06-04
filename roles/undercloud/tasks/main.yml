@@ -48,3 +48,6 @@
 - include: openstack_undercloud_install.yml
 
 - include: overcloud_image_prep.yml
+
+- include: add_exnet_masquerade.yml
+

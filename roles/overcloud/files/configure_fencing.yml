@@ -3,8 +3,14 @@
   hosts: Controller
   gather_facts: false
   become: true
+  vars:
+    ansible_command_timeout: 60
   tasks:
     - name: Run /home/stack/playbooks/configure_fencing.sh on first controller
       script: /home/stack/playbooks/configure_fencing.sh
       run_once: true
+      register: fconfig
+      until: fconfig is not failed
+      retries: 3
+      ignore_errors: yes
 

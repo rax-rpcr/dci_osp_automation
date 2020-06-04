@@ -107,6 +107,14 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templ
 {% endif %}
 {% endif %}
 
+
+#######################################################
+# 60-rackspace-tuning.yaml
+#   - Add the rackspace tuning env file
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/60-rackspace-tuning.yaml"
+
+
 #######################################################
 # Export the end results
 #######################################################

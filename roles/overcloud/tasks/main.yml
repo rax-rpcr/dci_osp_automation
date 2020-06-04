@@ -64,5 +64,3 @@
 - include: generate_openstacksdk_config.yml
 
 - include: overcloud_network.yml
-
-- include: add_exnet_masquerade.yml
