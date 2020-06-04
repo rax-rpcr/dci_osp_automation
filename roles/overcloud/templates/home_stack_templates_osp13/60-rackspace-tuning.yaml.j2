@@ -180,7 +180,7 @@ parameter_defaults:
     * This service is restricted to authorized users only.           *
     ******************************************************************
  
- TunedCustomProfile: |
+  TunedCustomProfile: |
     [main]
     summary=A high performance Tuned profile for Overloud Nodes
     include=throughput-performance
@@ -248,25 +248,25 @@ parameter_defaults:
     'Section 5.2.5 - Record Events That Modify User/Group Information #5':
       content: '-w /etc/security/opasswd -p wa -k identity'
       order  : 13
-    'Section 5.2.6 - Record Events That Modify the System's Network Environment #1':
+    "Section 5.2.6 - Record Events That Modify the System's Network Environment #1":
       content: '-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale'
       order  : 14
-    'Section 5.2.6 - Record Events That Modify the System's Network Environment #2':
+    "Section 5.2.6 - Record Events That Modify the System's Network Environment #2":
       content: '-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale'
       order  : 15
-    'Section 5.2.6 - Record Events That Modify the System's Network Environment #3':
+    "Section 5.2.6 - Record Events That Modify the System's Network Environment #3":
       content: '-w /etc/issue -p wa -k system-locale'
       order  : 16
-    'Section 5.2.6 - Record Events That Modify the System's Network Environment #4':
+    "Section 5.2.6 - Record Events That Modify the System's Network Environment #4":
       content: '-w /etc/issue.net -p wa -k system-locale'
       order  : 17
-    'Section 5.2.6 - Record Events That Modify the System's Network Environment #5':
+    "Section 5.2.6 - Record Events That Modify the System's Network Environment #5":
       content: '-w /etc/hosts -p wa -k system-locale'
       order  : 18
-    'Section 5.2.6 - Record Events That Modify the System's Network Environment #6':
+    "Section 5.2.6 - Record Events That Modify the System's Network Environment #6":
       content: '-w /etc/sysconfig/network -p wa -k system-locale'
       order  : 19
-    'Section 5.2.7 - Record Events That Modify the System's Mandatory Access Controls':
+    "Section 5.2.7 - Record Events That Modify the System's Mandatory Access Controls":
       content: '-w /etc/selinux/ -p wa -k MAC-policy'
       order  : 20
     'Section 5.2.8 - Collect Login and Logout Events #1':
