@@ -67,7 +67,7 @@ parameter_defaults:
   # Update network on deployment if needed. After testing
   # This should probably be only "Create" which is the 
   # default.
-  # NetworkDeploymentActions: ['CREATE','UPDATE']
+  NetworkDeploymentActions: ['CREATE','UPDATE']
 
 {% if enable_pci %}
   # OSP will set this to the provisioning network to allow keystone changes
