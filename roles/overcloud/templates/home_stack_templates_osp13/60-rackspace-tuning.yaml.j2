@@ -18,6 +18,7 @@ parameter_defaults:
   AdminPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
   RabbitPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
   RedisPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  OctaviaPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
   RabbitFDLimit: 65436
   MysqlMaxConnections: 10240
   NovaSchedulerDefaultFilters:
