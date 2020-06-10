@@ -18,7 +18,20 @@ parameter_defaults:
   AdminPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
   RabbitPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
   RedisPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  # It was found that osp generated passwords didn't always match the KeystonePasswordRegex requirements
+  # in further down in this config causing the deploy to fail.
   OctaviaPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  CeilometerPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  CinderPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  AodhPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  GlancePassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  GnocchiPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  HeatPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  ManilaPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  NeutronPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  NovaPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  PankoPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  SwiftPassword: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
   RabbitFDLimit: 65436
   MysqlMaxConnections: 10240
   NovaSchedulerDefaultFilters:
