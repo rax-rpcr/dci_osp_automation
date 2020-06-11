@@ -10,7 +10,7 @@
     - overcloud_network
 
 - name: Run the script
-  shell: /home/stack/scripts/overcloud_network.sh 
+  shell: stdbuf -i0 -o0 -e0 /home/stack/scripts/overcloud_network.sh | tee /home/stack/overcloud_network.log
   tags:
     - overcloud_network
 
