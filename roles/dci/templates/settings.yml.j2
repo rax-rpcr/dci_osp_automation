@@ -1,3 +1,21 @@
 ---
+# Basic required dci variables
 dci_topic: "{{ dci_topic }}"
 undercloud_ip: "{{ undercloud_ip }}"
+
+
+# Tempest dci playbook overrides
+tempest_white_regex: "smoke"
+public_net_name: "ext-net"
+public_network_type: "vlan"
+public_segmentation_id: "{{ gw_net_vlan }}"
+public_net_pool_start: "{{ gw_net_dhcp_from }}"
+public_net_pool_end: "{{ gw_net_dhcp_to }}"
+public_net_name: "ext-net"
+public_net_gateway: "{{ gw_net_gateway }}"
+floating_ip_cidr: "{{ gw_net_network_cidr }}"
+tempest_extra_config:
+  identity.password: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  identity.alt_password: "{{ lookup('password', '/dev/null length=48 chars=ascii_letters,digits,hexdigits') }}"
+  network.floating_network_name: "ext-net"
+
