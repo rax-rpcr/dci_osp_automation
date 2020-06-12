@@ -114,6 +114,13 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templ
 #######################################################
 ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/60-rackspace-tuning.yaml"
 
+########################################################
+# Redhat registration templates for the overcloud boxes 
+########################################################
+if [ -d /home/stack/templates/rhel-registration ]; then
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/rhel-registration/environment-rhel-registration.yaml"
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/rhel-registration/rhel-registration-resource-registry.yaml"
+fi
 
 #######################################################
 # Export the end results

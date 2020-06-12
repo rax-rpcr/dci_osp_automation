@@ -32,6 +32,9 @@
 - include: generate_templates.yml
   when: "dci_topic | lower == 'osp16'"
 
+- include: overcloud_registration.yml
+  when: "dci_topic | lower == 'osp13'"
+
 - include: generate_templates_osp13.yml
   when: "dci_topic | lower == 'osp13'"
 
