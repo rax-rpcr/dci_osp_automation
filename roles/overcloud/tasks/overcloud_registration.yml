@@ -40,3 +40,17 @@
   tags:
     - overcloud_registration
 
+- name: Copy the registration helper playbook over
+  copy:
+    src: register_overcloud.yml
+    dest: /home/stack/playbooks/register_overcloud.yml
+  tags:
+    - overcloud_registration
+
+
+- name: Copy the unregistration helper playbook over
+  copy:
+    src: unregister_overcloud.yml
+    dest: /home/stack/playbooks/unregister_overcloud.yml
+  tags:
+    - overcloud_registration

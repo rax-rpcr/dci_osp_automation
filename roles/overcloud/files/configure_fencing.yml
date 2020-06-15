@@ -1,3 +1,6 @@
+# Usage:
+#  . /home/stack/stackrc
+#  ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/configure_fencing.yml
 ---
 - name: Running ansible playbook to configure fencing
   hosts: Controller

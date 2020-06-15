@@ -1,0 +1,23 @@
+# Usage: 
+#  . /home/stack/stackrc
+#  ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/unregister_overcloud.yml
+---
+- name: Unregister all overcloud nodes
+  hosts: overcloud
+  become: true
+  vars_files:
+    - /home/stack/templates/rhel-registration/environment-rhel-registration.yaml
+  tasks:
+    - name: Copy the OSP rhel-unregistration script over
+      copy:
+        src: /home/stack/templates/rhel-registration/scripts/rhel-unregistration
+        dest: /root/rhel-unregistration
+        owner: root
+        group: root
+        mode: 0750
+    - name: Run the script
+      shell: |
+          export REG_METHOD={{ parameter_defaults['rhel_reg_method'] }}
+          /root/rhel-unregistration
+          rm /mnt/state/var/lib/rhsm/rhsm.ok
+

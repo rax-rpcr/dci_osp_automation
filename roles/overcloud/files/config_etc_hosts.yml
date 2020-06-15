@@ -1,3 +1,6 @@
+# Usage:
+#  . /home/stack/stackrc
+#  ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/config_etc_hosts.yml
 ---
 - name: Update /etc/hosts with the overcloud information
   hosts: localhost
