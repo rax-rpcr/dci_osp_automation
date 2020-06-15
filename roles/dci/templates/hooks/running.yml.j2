@@ -18,9 +18,9 @@
   - name: unregister the overcloud nodes
     shell: |
       . /home/stack/stackrc
-      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/unregister_overcloud.yml
+      export ANSIBLE_HOST_KEY_CHECKING=False
+      ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/unregister_overcloud.yml
     delegate_to: "undercloud" 
-    become: True
 
   - name: rollback of directorvm
     shell: |
