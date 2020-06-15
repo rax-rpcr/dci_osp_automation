@@ -19,7 +19,8 @@
       shell: |
           export REG_METHOD={{ parameter_defaults['rhel_reg_method'] }}
           /root/rhel-unregistration
-          if [ -e /mnt/state/var/lib/rhsm/rhsm.ok ]; then
+          if [ -e "/mnt/state/var/lib/rhsm/rhsm.ok" ]
+          then
             rm /mnt/state/var/lib/rhsm/rhsm.ok
           fi
 
