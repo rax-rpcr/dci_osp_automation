@@ -60,7 +60,6 @@ pre_deployment_group_validations:
   - "ironic-boot-configuration"           # Check ironic boot configuration
   - "network-environment"                 # Validate heat env file for network config
   - "node-disks"                          # Check node disk config
-  - "service-status"                      # Ensure services state
   - "undercloud-heat-purge-deleted"       # Verify heat-manage purge_deleted is enabled in crontab
   - "undercloud-process-count"            # Check number of openstack proceses on the undercloud
   - "validate-selinux"                    # validate selinux
@@ -70,6 +69,7 @@ pre_deployment_group_validations:
 # This one tries to check for lvm2 delegated to group overcloud before servers are online
 #  - "ceph-dependencies-installed"         # Check if ceph dependancies are installed
 # These are not working for various reasons
+#  - "service-status"                      # Ensure services state
 #  - "switch-vlans"                        # Compare switch port VLANs to VLANS in nic config
 #  - "ceph-pg"                             # Validate requrested ceph placement groups
 # These are not used:
