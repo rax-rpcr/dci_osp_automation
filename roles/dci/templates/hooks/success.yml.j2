@@ -1,0 +1,5 @@
+---
+- block:
+  - name: Re-add networks that tempest deletes
+    shell: stdbuf -i0 -o0 -e0 /home/stack/scripts/overcloud_network.sh | tee /home/stack/overcloud_network.log
+    delegate_to: "undercloud"

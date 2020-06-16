@@ -30,6 +30,11 @@ if [ $? != 0 ]; then
       --dhcp
 else
   echo "Subnet ext-subnet exists"
+  openstack subnet show ext-subnet | egrep 'enable_dhcp.*False' > /dev/null 2>&1
+  if [ $? == 0 ]; then
+    echo "Enabling dhcp for ext-subnet"
+    openstack subnet set --dhcp ext-subnet
+  fi
 fi
 
 

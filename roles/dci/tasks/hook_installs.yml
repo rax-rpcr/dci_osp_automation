@@ -27,5 +27,6 @@
   with_items:
     - "pre-run.yml"
     - "running.yml"
+    - "success.yml"
   tags:
     - config_hooks
