@@ -1,43 +1,24 @@
 # Usage: 
 #  . /home/stack/stackrc
 #  ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/register_overcloud.yml
+#
+# Info gathered from section 5.9 in the osp16 docs:
+#  https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.0/html/advanced_overcloud_customization/ansible-based-registration
 ---
-- name: Unregister all overcloud nodes
+- name: register all overcloud nodes
   hosts: overcloud
   become: true
   vars_files:
-    - /home/stack/templates/rhel-registration/environment-rhel-registration.yaml
+    - /home/stack/templates/rhsm.yaml
   tasks:
-    - name: Copy the OSP rhel-registration script over
-      copy:
-        src: /home/stack/templates/rhel-registration/scripts/rhel-registration
-        dest: /root/rhel-registration
-        owner: root
-        group: root
-        mode: 0750
-    - name: Run the script
-      shell: |
-          export REG_METHOD="{{ parameter_defaults['rhel_reg_method'] }}"
-          export REG_ACTIVATION_KEY="{{ parameter_defaults['rhel_reg_activation_key'] }}"
-          export REG_AUTO_ATTACH="{{ parameter_defaults['rhel_reg_auto_attach'] }}"
-          export REG_BASE_URL="{{ parameter_defaults['rhel_reg_base_url'] }}"
-          export REG_ENVIRONMENT="{{ parameter_defaults['rhel_reg_environment'] }}"
-          export REG_FORCE="{{ parameter_defaults['rhel_reg_force'] }}"
-          export REG_MACHINE_NAME="{{ parameter_defaults['rhel_reg_machine_name'] }}"
-          export REG_ORG="{{ parameter_defaults['rhel_reg_org'] }}"
-          export REG_PASSWORD="{{ parameter_defaults['rhel_reg_password'] }}"
-          export REG_POOL_ID="{{ parameter_defaults['rhel_reg_pool_id'] }}"
-          export REG_RELEASE="{{ parameter_defaults['rhel_reg_release'] }}"
-          export REG_REPOS="{{ parameter_defaults['rhel_reg_repos'] }}"
-          export REG_SAT_URL="{{ parameter_defaults['rhel_reg_sat_url'] }}"
-          export REG_SERVER_URL="{{ parameter_defaults['rhel_reg_server_url'] }}"
-          export REG_SERVICE_LEVEL="{{ parameter_defaults['rhel_reg_service_level'] }}"
-          export REG_USER="{{ parameter_defaults['rhel_reg_user'] }}"
-          export REG_TYPE="{{ parameter_defaults['rhel_reg_type'] }}"
-          export REG_SAT_REPO="{{ parameter_defaults['rhel_reg_sat_repo'] }}"
-          export REG_HTTP_PROXY_HOST="{{ parameter_defaults['rhel_reg_http_proxy_host'] }}"
-          export REG_HTTP_PROXY_PORT="{{ parameter_defaults['rhel_reg_http_proxy_port'] }}"
-          export REG_HTTP_PROXY_USERNAME="{{ parameter_defaults['rhel_reg_http_proxy_username'] }}"
-          export REG_HTTP_PROXY_PASSWORD="{{ parameter_defaults['rhel_reg_http_proxy_password'] }}"
-          /root/rhel-registration
+    - name: Register system
+      redhat_subscription:
+        username: '{{ parameter_defaults.RhsmVars.rhsm_username }}'
+        password: '{{ parameter_defaults.RhsmVars.rhsm_password }}'
+        pool_ids: '{{ parameter_defaults.RhsmVars.rhsm_pool_ids }}'
+    - name: Disable all repos
+      command: "subscription-manager repos --disable *"
+    - name: Enable current list of repos
+      command: "subscription-manager repos --enable {{ item }}"
+      with_items: '{{ parameter_defaults.RhsmVars.rhsm_repos }}'
 

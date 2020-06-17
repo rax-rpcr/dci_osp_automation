@@ -1,0 +1,57 @@
+---
+- name: Copy the registration templates over
+  shell: |
+    cp -r /usr/share/openstack-tripleo-heat-templates/extraconfig/pre_deploy/rhel-registration /home/stack/templates/
+    chown stack: /home/stack/templates/rhel-registration
+  args:
+    creates: /home/stack/templates/rhel-registration
+  tags:
+    - overcloud_registration
+
+- name: Update the rhsm method
+  lineinfile:
+    path: /home/stack/templates/rhel-registration/environment-rhel-registration.yaml
+    regexp: '^  rhel_reg_method: ""'
+    line: '  rhel_reg_method: "portal"'
+  tags:
+    - overcloud_registration
+
+- name: Update the rhsm pool id
+  lineinfile:
+    path: /home/stack/templates/rhel-registration/environment-rhel-registration.yaml
+    regexp: '^  rhel_reg_pool_id: ""'
+    line: '  rhel_reg_pool_id: "{{ rhsm_pool[0] }}"'
+  tags:
+    - overcloud_registration
+
+- name: Update the rhsm user
+  lineinfile:
+    path: /home/stack/templates/rhel-registration/environment-rhel-registration.yaml
+    regexp: '^  rhel_reg_user: ""'
+    line: '  rhel_reg_user: "{{ rhsm_user }}"'
+  tags:
+    - overcloud_registration
+
+- name: Update the rhsm password
+  lineinfile:
+    path: /home/stack/templates/rhel-registration/environment-rhel-registration.yaml
+    regexp: '^  rhel_reg_password: ""'
+    line: '  rhel_reg_password: "{{ rhsm_pass }}"'
+  tags:
+    - overcloud_registration
+
+- include: create_playbooks_dir.yml
+
+- name: Copy the registration helper playbook over
+  copy:
+    src: register_overcloud_osp13.yml
+    dest: /home/stack/playbooks/register_overcloud.yml
+  tags:
+    - overcloud_registration
+
+- name: Copy the unregistration helper playbook over
+  copy:
+    src: unregister_overcloud_osp13.yml
+    dest: /home/stack/playbooks/unregister_overcloud.yml
+  tags:
+    - overcloud_registration

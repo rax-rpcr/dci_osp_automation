@@ -1,42 +1,8 @@
 ---
-- name: Copy the registration templates over
-  shell: |
-    cp -r /usr/share/openstack-tripleo-heat-templates/extraconfig/pre_deploy/rhel-registration /home/stack/templates/
-    chown stack: /home/stack/templates/rhel-registration
-  args:
-    creates: /home/stack/templates/rhel-registration
-  tags:
-    - overcloud_registration
-
-- name: Update the rhsm method
-  lineinfile:
-    path: /home/stack/templates/rhel-registration/environment-rhel-registration.yaml
-    regexp: '^  rhel_reg_method: ""'
-    line: '  rhel_reg_method: "portal"'
-  tags:
-    - overcloud_registration
-
-- name: Update the rhsm pool id
-  lineinfile:
-    path: /home/stack/templates/rhel-registration/environment-rhel-registration.yaml
-    regexp: '^  rhel_reg_pool_id: ""'
-    line: '  rhel_reg_pool_id: "{{ rhsm_pool[0] }}"'
-  tags:
-    - overcloud_registration
-
-- name: Update the rhsm user
-  lineinfile:
-    path: /home/stack/templates/rhel-registration/environment-rhel-registration.yaml
-    regexp: '^  rhel_reg_user: ""'
-    line: '  rhel_reg_user: "{{ rhsm_user }}"'
-  tags:
-    - overcloud_registration
-
-- name: Update the rhsm password
-  lineinfile:
-    path: /home/stack/templates/rhel-registration/environment-rhel-registration.yaml
-    regexp: '^  rhel_reg_password: ""'
-    line: '  rhel_reg_password: "{{ rhsm_pass }}"'
+- name: Generate the rhsm.yaml template
+  template:
+    src: home_stack_templates/rhsm.yaml.j2
+    dest: /home/stack/templates/rhsm.yaml
   tags:
     - overcloud_registration
 

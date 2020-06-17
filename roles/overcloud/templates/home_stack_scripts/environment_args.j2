@@ -111,6 +111,13 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templ
 {% endif %}
 {% endif %}
 
+########################################################
+# Redhat registration templates for the overcloud boxes
+########################################################
+if [ -e /home/stack/templates/rhsm.yaml ]; then
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/rhsm.yaml"
+fi
+
 #######################################################
 # Export the end results
 #######################################################

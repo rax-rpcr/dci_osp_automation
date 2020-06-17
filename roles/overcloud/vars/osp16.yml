@@ -11,4 +11,7 @@ required_overcloud_repos:
   - satellite-tools-6.5-for-rhel-8-x86_64-rpms
   - openstack-16-for-rhel-8-x86_64-rpms
   - fast-datapath-for-rhel-8-x86_64-rpms
+  - rhceph-4-osd-for-rhel-8-x86_64-rpms
+  - rhceph-4-mon-for-rhel-8-x86_64-rpms
+  - rhceph-4-tools-for-rhel-8-x86_64-rpms
 
