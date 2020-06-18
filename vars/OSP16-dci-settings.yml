@@ -1,0 +1,22 @@
+---
+##########################
+# Vars needed by dci.yml
+##########################
+dci_topic: "OSP16"
+undercloud_ip: "192.168.122.210"
+dci_ironic_provisioning_ip: "192.168.201.4"
+dci_ironic_provisioning_prefix: "{{ ironic_provisioning_network.split('/')[1] }}"
+
+# Neutron gateway(ext-net/ext-subnet) network information needed to generate the tempest settings
+# The dci role generates the /etc/dci/settings.yml file with tempest variables generated from
+# the variables below. I'm putting these in here for information, as they are set in our example.yml
+# var file.
+#gw_net_gateway: "172.20.88.1"
+#gw_net_network_cidr: "172.20.88.0/22"
+#gw_net_vlan: "295"
+#gw_net_dhcp_from: "172.20.88.50"
+#gw_net_dhcp_to: "172.20.88.255"
+
+# This is used by dci, undercloud and overcloud roles. I'm just putting a reference here as the
+# settings.yml needs it for the dci_ironic_provisioning_prefix setting.
+#ironic_provisioning_network: "192.168.201.0/24"
