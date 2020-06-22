@@ -1,9 +1,0 @@
----
-##########################
-# Vars needed by dci.yml
-##########################
-dci_topic: "OSP16"
-undercloud_ip: "192.168.122.210"
-dci_ironic_provisioning_ip: "192.168.201.4"
-dci_ironic_provisioning_prefix: "{{ ironic_provisioning_network.split('/')[1] }}"
-
