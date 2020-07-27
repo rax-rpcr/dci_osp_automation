@@ -25,7 +25,7 @@ undercloud_repositories:
   - "rhel-8-for-x86_64-highavailability-rpms"
   - "ansible-2.8-for-rhel-8-x86_64-rpms"
   - "satellite-tools-6.5-for-rhel-8-x86_64-rpms"
-  - "openstack-16-for-rhel-8-x86_64-rpms"
+  - "openstack-16.1-for-rhel-8-x86_64-rpms"
   - "fast-datapath-for-rhel-8-x86_64-rpms"
-  - "openstack-16-devtools-for-rhel-8-x86_64-rpms"
+  - "openstack-16.1-devtools-for-rhel-8-x86_64-rpms"
 
