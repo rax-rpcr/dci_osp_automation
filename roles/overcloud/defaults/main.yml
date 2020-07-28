@@ -62,7 +62,6 @@ pre_deployment_group_validations:
   - "node-disks"                          # Check node disk config
   - "undercloud-heat-purge-deleted"       # Verify heat-manage purge_deleted is enabled in crontab
   - "undercloud-process-count"            # Check number of openstack proceses on the undercloud
-  - "validate-selinux"                    # validate selinux
   - "undercloud-debug"                    # Undercloud Services Debug Check
 # Looked into in bug: https://storyboard.openstack.org/#!/story/2007457
 #  - "collect-flavors-and-verify-profiles" # Collect and verify role flavors
@@ -72,6 +71,7 @@ pre_deployment_group_validations:
 #  - "service-status"                      # Ensure services state
 #  - "switch-vlans"                        # Compare switch port VLANs to VLANS in nic config
 #  - "ceph-pg"                             # Validate requrested ceph placement groups
+#  - "validate-selinux"                    # validate selinux
 # These are not used:
 #  - "ceilometerdb-size"                  # Events db size check(depreciated)
 #  - "tls-everywhere-pre-deployment"      # Confirm undercloud is setup correctly prior to overcloud deploy
