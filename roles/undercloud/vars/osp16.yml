@@ -16,8 +16,8 @@ overcloud_image_pkg_names:
   - rhosp-director-images-ipa
 
 overcloud_glance_image_files:
-  - /usr/share/rhosp-director-images/overcloud-full-latest-16.0.tar
-  - /usr/share/rhosp-director-images/ironic-python-agent-latest-16.0.tar
+  - /usr/share/rhosp-director-images/overcloud-full-latest-16.1.tar
+  - /usr/share/rhosp-director-images/ironic-python-agent-latest-16.1.tar
 
 undercloud_repositories:
   - "rhel-8-for-x86_64-baseos-rpms"
