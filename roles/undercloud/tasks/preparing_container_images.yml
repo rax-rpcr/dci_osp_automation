@@ -28,11 +28,11 @@
   tags:
     - prepare_container_images
 
-- name: Update the registry to use beta for OSP16
-  lineinfile:
-    path: /home/stack/containers-prepare-parameter.yaml
-    regexp: '^      namespace: registry.redhat.io/rhosp-rhel8'
-    line: '      namespace: registry.redhat.io/rhosp-beta'
-  when: "dci_topic | lower == 'osp16'"
-  tags:
-    - prepare_container_images
+#- name: Update the registry to use beta for OSP16
+#  lineinfile:
+#    path: /home/stack/containers-prepare-parameter.yaml
+#    regexp: '^      namespace: registry.redhat.io/rhosp-rhel8'
+#    line: '      namespace: registry.redhat.io/rhosp-beta'
+#  when: "dci_topic | lower == 'osp16'"
+#  tags:
+#    - prepare_container_images
