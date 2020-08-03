@@ -20,12 +20,12 @@ overcloud_glance_image_files:
   - /usr/share/rhosp-director-images/ironic-python-agent-latest-16.1.tar
 
 undercloud_repositories:
-  - "rhel-8-for-x86_64-baseos-rpms"
-  - "rhel-8-for-x86_64-appstream-rpms"
-  - "rhel-8-for-x86_64-highavailability-rpms"
-  - "ansible-2.8-for-rhel-8-x86_64-rpms"
+  - "rhel-8-for-x86_64-baseos-eus-rpms"
+  - "rhel-8-for-x86_64-appstream-eus-rpms"
+  - "rhel-8-for-x86_64-highavailability-eus-rpms"
+  - "ansible-2.9-for-rhel-8-x86_64-rpms"
   - "satellite-tools-6.5-for-rhel-8-x86_64-rpms"
   - "openstack-16.1-for-rhel-8-x86_64-rpms"
   - "fast-datapath-for-rhel-8-x86_64-rpms"
-  - "openstack-16-devtools-for-rhel-8-x86_64-rpms"
+  - "openstack-16.1-devtools-for-rhel-8-x86_64-rpms"
 
