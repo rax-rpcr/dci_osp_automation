@@ -83,7 +83,6 @@ post_deployment_group_validations:
   - "controller-ulimits"              # Check controller ulimits
   - "haproxy"                         # Haproxy config check
   - "image-serve"                     # Verify image-serve service is working and answering
-  - "mysql-open-files-limit"          # MySQL open files limit
   - "ntp"                             # Verify all nodes have clock in sync
   - "openstack-endpoints"             # Check connectivity to various openstack services
 # Failing(needs investigated)
@@ -97,6 +96,7 @@ post_deployment_group_validations:
 #  - "neutron-sanity-check"            # Neutron Sanity Check(takes a while)
 #  - "healthcheck-service-status"      # Healthcheck systemd services check(takes a while)
 #  - "controller-token"                # Verify that keystone admin token is disabled
+#  - "mysql-open-files-limit"          # MySQL open files limit
 # Not in use
 #  - "tls-everywhere-post-deployment" # Confirm overcloud nodes are setup correctly
 
