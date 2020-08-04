@@ -3,7 +3,7 @@
   template:
     src: "undercloud.conf.j2"
     dest: "/home/stack/undercloud.conf"
-  when: "dci_topic | lower == 'osp16'"
+  when: "dci_topic | lower == 'osp16.1'"
   tags:
     - config_undercloud
 

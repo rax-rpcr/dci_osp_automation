@@ -28,7 +28,7 @@
 - include: install_ceph_ansible.yml
 
 - include: preparing_container_images.yml
-  when: "dci_topic | lower == 'osp16'"
+  when: "dci_topic | lower == 'osp16.1'"
 
 # Redhat docs don't cover the ssl cert generation
 
@@ -43,7 +43,7 @@
 - include: configuring_the_director.yml
 
 - include: validations_pre_undercloud_install.yml
-  when: "dci_topic | lower == 'osp16'"
+  when: "dci_topic | lower == 'osp16.1'"
 
 - include: openstack_undercloud_install.yml
 

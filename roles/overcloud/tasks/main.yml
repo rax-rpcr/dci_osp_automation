@@ -23,26 +23,26 @@
 - include: register_ironic_nodes.yml
 
 - include: validations_pre_introspection.yml
-  when: "dci_topic | lower == 'osp16'"
+  when: "dci_topic | lower == 'osp16.1'"
 
 - include: run_introspection.yml
 
 - include: setup_ssl_certs.yml
 
 - include: overcloud_registration.yml
-  when: "dci_topic | lower == 'osp16'"
+  when: "dci_topic | lower == 'osp16.1'"
 
 - include: overcloud_registration_osp13.yml
   when: "dci_topic | lower == 'osp13'"
 
 - include: generate_templates.yml
-  when: "dci_topic | lower == 'osp16'"
+  when: "dci_topic | lower == 'osp16.1'"
 
 - include: generate_templates_osp13.yml
   when: "dci_topic | lower == 'osp13'"
 
 - include: generate_scripts.yml
-  when: "dci_topic | lower == 'osp16'"
+  when: "dci_topic | lower == 'osp16.1'"
 
 - include: generate_scripts_osp13.yml
   when: "dci_topic | lower == 'osp13'"
@@ -50,7 +50,7 @@
 - include: public_endpoint_hosts.yml
 
 - include: validations_pre_deploy.yml
-  when: "dci_topic | lower == 'osp16'"
+  when: "dci_topic | lower == 'osp16.1'"
 
 - include: container_image_prepare_osp13.yml
   when: "dci_topic | lower == 'osp13'"
@@ -58,7 +58,7 @@
 - include: run_overcloud_deploy.yml
 
 - include: validations_post_deploy.yml
-  when: "dci_topic | lower == 'osp16'"
+  when: "dci_topic | lower == 'osp16.1'"
 
 # Post configuration steps below
 - include: configure_fencing.yml
