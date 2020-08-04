@@ -2,7 +2,7 @@
 #  . /home/stack/stackrc
 #  ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/register_overcloud.yml
 #
-# Info gathered from section 5.9 in the osp16 docs:
+# Info gathered from section 5.9 in the osp16.1 docs:
 #  https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.0/html/advanced_overcloud_customization/ansible-based-registration
 ---
 - name: register all overcloud nodes
