@@ -1,0 +1,10 @@
+---
+
+python_command: "python2"
+
+rpc_maas_test_packages:
+  - python-virtualenv
+  - python-requests
+  - python2-requests
+  - python2-requestsexceptions
+  - gcc

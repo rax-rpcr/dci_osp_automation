@@ -1,0 +1,8 @@
+---
+
+- name: Uninstall rpc-maas for OSP
+  hosts: undercloud
+  become: true
+  roles:
+    - uninstall_rpc_maas
+

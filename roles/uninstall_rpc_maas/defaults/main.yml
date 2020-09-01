@@ -1,0 +1,7 @@
+---
+rpc_maas_name: "rpc-maas"
+
+mtc_name: "magnanimous-turbo-chainsaw"
+
+maas_config_name: "user_maas_variables.yml"
+maas_config_path: "/home/stack/{{ maas_config_name }}"

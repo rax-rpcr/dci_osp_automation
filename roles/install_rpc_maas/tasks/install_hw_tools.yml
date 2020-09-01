@@ -1,0 +1,16 @@
+- name: copy over the playbook to be ran from the director
+  copy:
+    src: install_hw_tools.yml
+    dest: /home/stack/playbooks/install_hw_tools.yml
+    owner: stack
+    group: stack
+    mode: 0644
+  tags:
+    install_hw_tools
+
+- name: Run playbook /home/stack/playbooks/install_hw_tools.yml
+  shell: |
+    . /home/stack/stackrc
+    ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/install_hw_tools.yml
+  tags:
+    install_hw_tools

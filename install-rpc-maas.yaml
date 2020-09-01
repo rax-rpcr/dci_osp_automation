@@ -1,0 +1,8 @@
+---
+
+- name: Install rpc-maas for OSP
+  hosts: undercloud
+  become: true
+  roles:
+    - install_rpc_maas
+
