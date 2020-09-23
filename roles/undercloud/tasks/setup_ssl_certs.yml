@@ -62,7 +62,7 @@
   shell: |
     echo 'subjectAltName=DNS:{{ ansible_fqdn }},IP:{{ sanip_pre }}.1,IP:{{ sanip_pre }}.2,IP:{{ sanip_pre }}.3' > /tmp/san.txt
     openssl x509 -req -in {{ ansible_fqdn }}.csr \
-      -CA director-ca.crt -CAkey director-ca.key \
+      -CA director-ca.crt -CAkey director-ca.key -days 3650 \
       -CAcreateserial -out {{ ansible_fqdn }}.crt \
       -extfile /tmp/san.txt
     rm -f /tmp/san.txt
