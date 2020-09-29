@@ -35,7 +35,7 @@
 
         # Run the script
         export answer=yes
-        /root/add_hp_repo.sh spp
+        /root/add_hp_repo.sh spp -d RedHat
         /root/add_hp_repo.sh -d CentOS -r $(lsb_release -r -s) mcp
 
       when:
