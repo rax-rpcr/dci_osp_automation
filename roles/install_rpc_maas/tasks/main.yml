@@ -12,6 +12,8 @@
   tags:
     - always
 
+- include: install_hw_tools.yml
+
 - include: clone_git_repos.yml
 
 - name: Install required packages for venv creation
@@ -55,6 +57,7 @@
     creates: /root/ansible_venv
   tags:
     - install_mtc
+  when: 'dci_topic == "OSP13"'
 
 # Enable multipathd before running the install
 - name: Generate multipathd.conf and enable the service
@@ -67,9 +70,10 @@
   become: false
   tags:
     - install_rpc_maas
+  when: 'dci_topic == "OSP13"'
 
-# Install rpc-maas
-- name: Install rpc-maas
+# Install rpc-maas(osp13)
+- name: Install rpc-maas(osp13)
   shell: |
     #!/bin/bash
 
@@ -95,9 +99,30 @@
 
   tags:
     - install_rpc_maas
+  when: 'dci_topic == "OSP13"'
 
-# Verify rpc-maas
-- name: Verify rpc-maas
+# Install rpc-maas(osp16.1)
+- name: Install rpc-maas(osp16.1)
+  shell: |
+    #!/bin/bash
+
+    # bash settings
+    set -x
+    set -o pipefail
+
+    # Run the rpc-maas playbooks
+    cd /opt/{{ rpc_maas_name }}
+    ./scripts/osp16-prep.sh
+    . /root/ansible_venv/bin/activate
+    ansible-playbook -e @/home/stack/user_maas_variables.yml -i /opt/rpc-maas/inventory/rpcr_dynamic_inventory.py playbooks/site.yml -e 'create_entity_if_not_exists=True' -e 'maas_use_api=True' -e 'maas_private_monitoring_enabled=True' -f 75 | tee /opt/{{ rpc_maas_name }}/rpc_maas_install.log
+    deactivate
+
+  tags:
+    - install_rpc_maas
+  when: 'dci_topic == "OSP16.1"'
+
+# Verify rpc-maas(osp13)
+- name: Verify rpc-maas(osp13)
   shell: |
     #!/bin/bash
 
@@ -116,3 +141,24 @@
 
   tags:
     - verify_rpc_maas
+  when: 'dci_topic == "OSP13"'
+
+
+# Verify rpc-maas(osp16.1)
+- name: Verify rpc-maas(osp16.1)
+  shell: |
+    #!/bin/bash
+
+    # bash settings
+    set -x
+    set -o pipefail
+
+    # Run the rpc-maas verify playbook
+    cd /opt/{{ rpc_maas_name }}
+    . /root/ansible_venv/bin/activate
+    ansible-playbook -e @/home/stack/user_maas_variables.yml -i /opt/rpc-maas/inventory/rpcr_dynamic_inventory.py playbooks/maas-verify.yml -f 75 | tee /opt/{{ rpc_maas_name }}/rpc_maas_verify.log
+    deactivate
+
+  tags:
+    - verify_rpc_maas
+  when: 'dci_topic == "OSP16.1"'

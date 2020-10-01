@@ -16,4 +16,4 @@
     version: "{{ mtc_version }}"
   tags:
     - git_clone
-
+  when: '"OSP13" in dci_topic'

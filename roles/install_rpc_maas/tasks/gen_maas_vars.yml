@@ -1,6 +1,6 @@
 ---
 
-- name: Populate ~/maas-vars.rc using maasutils.py
+- name: Populate ~/maas-vars.rc using maasutils.py(osp13)
   shell: |
     /opt/test-maas/bin/python /opt/rpc-maas/tests/maasutils.py \
     --username "{{ pubcloud_username }}" \
@@ -10,6 +10,20 @@
     creates: /root/maas-vars.rc
   tags:
     - gen_maas_vars
+  when: 'dci_topic == "OSP13"'
+
+- name: Populate ~/maas-vars.rc using maasutils.py(osp16.1)
+  shell: |
+    export PUBCLOUD_USERNAME='{{ pubcloud_username }}'
+    export PUBCLOUD_API_KEY='{{ pubcloud_api_key }}'
+    export PUBCLOUD_TENANT_ID='{{ pubcloud_tenant_id }}'
+    cd /opt/{{ rpc_maas_name }}
+    ./scripts/osp16-prep.sh
+  args:
+    creates: /root/maas-vars.rc
+  tags:
+    - gen_maas_vars
+  when: 'dci_topic == "OSP16.1"'
 
 - name: Source the environment variable file for later
   shell: |
