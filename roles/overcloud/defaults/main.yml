@@ -8,6 +8,9 @@ enable_octavia: true
 enable_ceph: true
 enable_manila: true
 
+# defaults to ovn in osp16. Set to 'ovs' to fall back.
+osp16_ml2_type: 'ovn'
+
 
 # Overcloud defaults
 

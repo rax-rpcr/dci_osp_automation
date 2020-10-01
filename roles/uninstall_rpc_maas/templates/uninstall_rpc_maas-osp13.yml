@@ -1,0 +1,81 @@
+# Usage:
+#  . /home/stack/stackrc
+#  ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/uninstall_rpc_maas.yml
+---
+- name: Cleanup rackspace monitoring api objects
+  hosts: undercloud
+  become: true
+  tasks:
+    - name: Cleanup the objects in the rackspace monitoring api
+      shell: |
+        #!/bin/bash
+    
+        # bash settings
+        set -x
+        set -o pipefail
+    
+        # Source the mtc workspace
+        export PATH=${PATH}{{ ':' }}.
+        export MAAS_DIRECTOR_NAME='directorvm'
+        ANSIBLE_VERSION=2.7.11 source /opt/{{ mtc_name }}/scripts/setup-workspace.sh
+    
+        # Run the rpc-maas verify playbook
+        cd /opt/{{ rpc_maas_name }}
+        ansible-playbook ${USER_ALL_VARS} playbooks/maas-raxmon-delete-resources.yml -f 75 | tee /opt/{{ rpc_maas_name }}/rpc_maas_clean.log
+      tags:
+        - clean_objects
+
+    - name: Remove undercloud only files and directories
+      file:
+        path: "{{ '{{' }} item {{ '}}' }}"
+        state: absent
+      with_items:
+        - /opt/{{ mtc_name }}
+        - /opt/{{ rpc_maas_name }}
+        - /opt/openstack-ansible-ops
+        - /opt/rpc-maas-tools
+        - /opt/test-maas
+        - /home/stack/user_tools_variables.yml
+        - /home/stack/user_maas_variables.yml
+        - /root/ansible_venv
+      tags:
+        - remove_files
+
+- name: Uninstall the rackspace-monitoring-agent package
+  hosts: 'undercloud:overcloud'
+  become: true
+  tasks:
+
+    - name: Uninstall rackspace-monitoring-agent
+      yum:
+        name: rackspace-monitoring-agent
+        state: absent
+      tags:
+        - uninstall_agent
+
+    - name: Remove some files
+      file:
+        path: "{{ '{{' }} item {{ '}}' }}"
+        state: absent 
+      with_items:
+        - /etc/rackspace-monitoring-agent.cfg.rpmsave
+        - /root/.raxrc
+        - /root/maas-vars.rc
+        - /usr/lib/rackspace-monitoring-agent
+        - /openstack/venvs/maas-0.0.0
+      tags:
+        - remove_files
+
+
+- name: Remove rabbitmq maas user
+  hosts: 'Controller[0]'
+  become: true
+  tasks:
+    - name:
+      shell: |
+        docker exec $(docker ps | awk '/rabbitmq-bundle-docker/{print $NF}') rabbitmqctl list_users | grep maas_user
+        if [ $? == 0 ]; then
+          docker exec $(docker ps | awk '/rabbitmq-bundle-docker/{print $NF}') rabbitmqctl delete_user maas_user
+        fi
+      tags:
+        - remove_rabbit_user

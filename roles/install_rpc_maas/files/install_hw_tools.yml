@@ -1,0 +1,61 @@
+# Usage:
+#  . /home/stack/stackrc
+#  ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/install_hw_tools.yml
+---
+- name: Install hardware tooling
+  hosts: overcloud
+  become: true
+  tasks:
+    - name: Install lsb tools for redhat
+      yum:
+        name:
+          - redhat-lsb
+          - wget
+        state: present
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_system_vendor == "HP"
+    - name: Configure repos 
+      get_url:
+        url: http://downloads.linux.hpe.com/SDR/add_repo.sh
+        dest: /root/add_hp_repo.sh
+        owner: root
+        group: root
+        mode: '0750'
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_system_vendor == 'HP'
+    - name: Run the script to add the repo
+      shell: |
+        #!/bin/bash
+
+        # Work around the license read
+        sed -i -e 's/read answer/#read answer/g' /root/add_hp_repo.sh
+        sed -i -e 's/more $TMPFILE/#more $TMPFILE/g' /root/add_hp_repo.sh
+
+        # Run the script
+        export answer=yes
+        /root/add_hp_repo.sh spp -d RedHat
+        /root/add_hp_repo.sh -d CentOS -r $(lsb_release -r -s) mcp
+
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_system_vendor == 'HP'
+    - name: Install hp tools for redhat
+      yum:
+        name:
+          - ssacli
+          - hp-health
+          - hponcfg
+        state: present
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_system_vendor == "HP"
+    - name: Make sure hp-health is up
+      service:
+        name: hp-health
+        state: started
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_system_vendor == "HP"
+

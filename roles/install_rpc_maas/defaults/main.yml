@@ -1,0 +1,15 @@
+---
+
+rpc_maas_name: "rpc-maas"
+rpc_maas_url: "https://github.com/rcbops/{{ rpc_maas_name }}.git"
+rpc_maas_version: "master"
+
+mtc_name: "magnanimous-turbo-chainsaw"
+mtc_url: "https://github.com/rcbops/{{ mtc_name }}.git"
+mtc_version: "master"
+
+maas_config_name: "user_maas_variables.yml"
+maas_config_path: "/home/stack/{{ maas_config_name }}"
+
+maas_fqdn_extenstion: ""
+maas_env_identifier: ""

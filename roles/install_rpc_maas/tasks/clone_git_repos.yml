@@ -1,0 +1,19 @@
+---
+
+# Clone rpc-maas onto the undercloud
+- name: Clone rpc-maas to /opt/rpc-maas on the undercloud
+  git:
+    repo: "{{ rpc_maas_url }}"
+    dest: "/opt/{{ rpc_maas_name }}"
+    version: "{{ rpc_maas_version }}"
+  tags:
+    - git_clone
+
+- name: Clone magnanimous-turbo-chainsaw to /opt/magnanimous-turbo-chainsaw on the undercloud
+  git:
+    repo: "{{ mtc_url }}"
+    dest: "/opt/{{ mtc_name }}"
+    version: "{{ mtc_version }}"
+  tags:
+    - git_clone
+  when: '"OSP13" in dci_topic'

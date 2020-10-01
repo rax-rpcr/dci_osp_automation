@@ -1,0 +1,33 @@
+# MaaS v2 overrides
+maas_api_url: "{{ maas_api_url }}"
+maas_auth_token: "{{ maas_auth_token }}"
+
+# The entityLabel should based on the 'maas_fqdn_extension', as follows:
+# entityLabel == '{{ inventory_hostname }}{{ maas_fqdn_extension }}'
+# Refer to the naming convention documentation section for additional details
+#
+maas_fqdn_extension: "{{ maas_fqdn_extension }}"
+
+# Define a Unique Environment ID
+# If multiple clouds exist on an account, each should have a different value
+#
+maas_env_identifier: "{{ maas_env_identifier }}"
+
+# Identify data center requirements for PNM and hardware monitoring
+#  true = Rackspace DC (RDC) or OpenStack Everywhere deployments
+# false = Customer DC (CDC)
+#
+maas_raxdc: true
+
+# Release-specific exclusions are now handled dynamically. These
+# overrides will likely remain empty. These are included for
+# compatibility to remove any remnant host_vars that may have
+# existed in the inventory.
+maas_excluded_checks: []
+maas_excluded_alarms: []
+
+maas_rabbitmq_password: "{{ maas_rabbitmq_password }}"
+maas_swift_accesscheck_password: "{{ maas_swift_accesscheck_password }}"
+
+maas_notification_plan: "{{ notification_plan_id }}"
+

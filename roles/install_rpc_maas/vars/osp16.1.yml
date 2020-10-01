@@ -1,0 +1,11 @@
+---
+
+rpc_maas_version: "osp16"
+
+python_command: "python3"
+
+rpc_maas_test_packages:
+  - python3-virtualenv
+  - python3-requests
+  - python3-requestsexceptions
+  - gcc

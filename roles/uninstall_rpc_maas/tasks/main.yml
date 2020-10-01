@@ -1,0 +1,28 @@
+- name: Copy over ansible playbook to do the real work from the directorvm
+  template:
+    src: uninstall_rpc_maas-osp13.yml
+    dest: /home/stack/playbooks/uninstall_rpc_maas.yml
+    owner: stack
+    group: stack
+    mode: 0644
+  tags:
+    - copy_uninstall_playbook
+  when: '"OSP13" in dci_topic'
+
+- name: Copy over ansible playbook to do the real work from the directorvm
+  template:
+    src: uninstall_rpc_maas-osp16.yml
+    dest: /home/stack/playbooks/uninstall_rpc_maas.yml
+    owner: stack
+    group: stack
+    mode: 0644
+  tags:
+    - copy_uninstall_playbook
+  when: '"OSP16" in dci_topic'
+
+- name: Run the uninstall playbook
+  shell: |
+    . /home/stack/stackrc
+    ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/uninstall_rpc_maas.yml
+  tags:
+    - run_uninstall_playbook

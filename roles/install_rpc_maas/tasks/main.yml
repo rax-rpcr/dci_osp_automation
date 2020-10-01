@@ -1,0 +1,164 @@
+---
+# Pull in variables based on dci topic
+- name: Pull in variables based on dci topic
+  include_vars: "{{lookup('first_Found', params)}}"
+  vars:
+    params:
+      files:
+        - '{{ dci_topic | lower }}.yml'
+      paths:
+        - 'vars'
+      skip: True
+  tags:
+    - always
+
+- include: install_hw_tools.yml
+
+- include: clone_git_repos.yml
+
+- name: Install required packages for venv creation
+  yum:
+    name: "{{ rpc_maas_test_packages }}"
+    state: present
+  tags:
+    - install_packages
+   
+# Steps to set up a testenv and pull the maas token & url
+- name: Set up the test venv
+  pip:
+    requirements: "/opt/{{ rpc_maas_name }}/test-requirements.txt"
+    virtualenv: "/opt/test-maas"
+    virtualenv_python: "{{ python_command }}"
+  tags:
+    - setup_test_venv
+
+- include: gen_maas_vars.yml
+
+
+# Generate the config
+- name: Generate the config file
+  template:
+    src: "{{ maas_config_name }}.j2"
+    dest: "{{ maas_config_path }}"
+    owner: stack
+    group: stack
+    force: no
+  tags:
+    - gen_maas_config
+
+
+# Install MTC
+- name: Install MTC
+  shell: |
+    cd /opt/{{ mtc_name }}
+    chmod u+x scripts/*
+    scripts/setup.sh
+  args:
+    creates: /root/ansible_venv
+  tags:
+    - install_mtc
+  when: 'dci_topic == "OSP13"'
+
+# Enable multipathd before running the install
+- name: Generate multipathd.conf and enable the service
+  shell: |
+    # Source the stackrc
+    . /home/stack/stackrc
+
+    # Generate the multipath config and start the service.
+    ANSIBLE_HOST_KEY_CHECKING=False ansible -i /usr/bin/tripleo-ansible-inventory all -m shell -a '/sbin/mpathconf --enable; systemctl restart multipathd.service' -b
+  become: false
+  tags:
+    - install_rpc_maas
+  when: 'dci_topic == "OSP13"'
+
+# Install rpc-maas(osp13)
+- name: Install rpc-maas(osp13)
+  shell: |
+    #!/bin/bash
+
+    # bash settings
+    set -x
+    set -o pipefail
+
+
+    # cd into the workspace
+    cd /opt/{{ mtc_name }}
+
+    # Source the mtc workspace
+    export PATH=${PATH}{{ ':' }}.
+    export MAAS_DIRECTOR_NAME='directorvm'
+    ANSIBLE_VERSION=2.7.11 source /opt/{{ mtc_name }}/scripts/setup-workspace.sh
+
+    # Run the probe
+    ansible-playbook /opt/{{ mtc_name }}/playbooks/probe-systems.yml | tee /opt/{{ mtc_name }}/system_probe.log
+
+    # Run the rpc-maas playbooks
+    cd /opt/{{ rpc_maas_name }}
+    ansible-playbook ${USER_ALL_VARS} playbooks/site.yml -e 'create_entity_if_not_exists=True' -e 'maas_use_api=True' -e 'maas_private_monitoring_enabled=False' -f 75 | tee /opt/{{ rpc_maas_name }}/rpc_maas_install.log
+
+  tags:
+    - install_rpc_maas
+  when: 'dci_topic == "OSP13"'
+
+# Install rpc-maas(osp16.1)
+- name: Install rpc-maas(osp16.1)
+  shell: |
+    #!/bin/bash
+
+    # bash settings
+    set -x
+    set -o pipefail
+
+    # Run the rpc-maas playbooks
+    cd /opt/{{ rpc_maas_name }}
+    ./scripts/osp16-prep.sh
+    . /root/ansible_venv/bin/activate
+    ansible-playbook -e @/home/stack/user_maas_variables.yml -i /opt/rpc-maas/inventory/rpcr_dynamic_inventory.py playbooks/site.yml -e 'create_entity_if_not_exists=True' -e 'maas_use_api=True' -e 'maas_private_monitoring_enabled=True' -f 75 | tee /opt/{{ rpc_maas_name }}/rpc_maas_install.log
+    deactivate
+
+  tags:
+    - install_rpc_maas
+  when: 'dci_topic == "OSP16.1"'
+
+# Verify rpc-maas(osp13)
+- name: Verify rpc-maas(osp13)
+  shell: |
+    #!/bin/bash
+
+    # bash settings
+    set -x
+    set -o pipefail
+
+    # Source the mtc workspace
+    export PATH=${PATH}{{ ':' }}.
+    export MAAS_DIRECTOR_NAME='directorvm'
+    ANSIBLE_VERSION=2.7.11 source /opt/{{ mtc_name }}/scripts/setup-workspace.sh
+
+    # Run the rpc-maas verify playbook
+    cd /opt/{{ rpc_maas_name }}
+    ansible-playbook ${USER_ALL_VARS} playbooks/maas-verify.yml -f 75 | tee /opt/{{ rpc_maas_name }}/rpc_maas_verify.log
+
+  tags:
+    - verify_rpc_maas
+  when: 'dci_topic == "OSP13"'
+
+
+# Verify rpc-maas(osp16.1)
+- name: Verify rpc-maas(osp16.1)
+  shell: |
+    #!/bin/bash
+
+    # bash settings
+    set -x
+    set -o pipefail
+
+    # Run the rpc-maas verify playbook
+    cd /opt/{{ rpc_maas_name }}
+    . /root/ansible_venv/bin/activate
+    ansible-playbook -e @/home/stack/user_maas_variables.yml -i /opt/rpc-maas/inventory/rpcr_dynamic_inventory.py playbooks/maas-verify.yml -f 75 | tee /opt/{{ rpc_maas_name }}/rpc_maas_verify.log
+    deactivate
+
+  tags:
+    - verify_rpc_maas
+  when: 'dci_topic == "OSP16.1"'

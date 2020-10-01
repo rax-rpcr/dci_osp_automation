@@ -51,6 +51,15 @@ ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /home/stack/templates/network-environme
 ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/docker-ha.yaml"
 
 
+{% if osp16_ml2_type == 'ovs' %}
+#######################################################
+# neutron-ovs.yaml
+#  - Overide ML2/OVN default to use ML2/OVS+linuxbridge
+#  - https://access.redhat.com/documentation/en-us/red_hat_openstack_platform/16.1/html/networking_guide/sec-networking-concepts#ml2-ovs-not-ovn
+#######################################################
+ENVIRONMENT_ARGS="${ENVIRONMENT_ARGS} -e /usr/share/openstack-tripleo-heat-templates/environments/services/neutron-ovs.yaml"
+{% endif %}
+
 #######################################################
 # inject-trust-anchor-hiera.yaml
 #   - Inject the undercloud CA certificate into the 

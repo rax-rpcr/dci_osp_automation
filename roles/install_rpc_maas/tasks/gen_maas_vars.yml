@@ -1,0 +1,74 @@
+---
+
+- name: Populate ~/maas-vars.rc using maasutils.py(osp13)
+  shell: |
+    /opt/test-maas/bin/python /opt/rpc-maas/tests/maasutils.py \
+    --username "{{ pubcloud_username }}" \
+    --api-key "{{ pubcloud_api_key }}" \
+    get_token_url
+  args:
+    creates: /root/maas-vars.rc
+  tags:
+    - gen_maas_vars
+  when: 'dci_topic == "OSP13"'
+
+- name: Populate ~/maas-vars.rc using maasutils.py(osp16.1)
+  shell: |
+    export PUBCLOUD_USERNAME='{{ pubcloud_username }}'
+    export PUBCLOUD_API_KEY='{{ pubcloud_api_key }}'
+    export PUBCLOUD_TENANT_ID='{{ pubcloud_tenant_id }}'
+    cd /opt/{{ rpc_maas_name }}
+    ./scripts/osp16-prep.sh
+  args:
+    creates: /root/maas-vars.rc
+  tags:
+    - gen_maas_vars
+  when: 'dci_topic == "OSP16.1"'
+
+- name: Source the environment variable file for later
+  shell: |
+    . /root/maas-vars.rc
+    echo ${MAAS_AUTH_TOKEN}
+  register: auth_token_echo
+  tags:
+    - gen_maas_vars
+    - gen_maas_config
+
+- name: Set the maas_auth_token fact
+  set_fact:
+    maas_auth_token: "{{ auth_token_echo.stdout }}"
+  tags:
+    - gen_maas_vars
+    - gen_maas_config
+
+- name: Source the environment variable file for later
+  shell: |
+    . /root/maas-vars.rc
+    echo ${MAAS_API_URL}
+  register: api_echo
+  tags:
+    - gen_maas_vars
+    - gen_maas_config
+
+- name: Set the maas_auth_token fact
+  set_fact:
+    maas_api_url: "{{ api_echo.stdout }}"
+  tags:
+    - gen_maas_vars
+    - gen_maas_config
+
+- name: Generate random string for maas_rabbitmq_password
+  set_fact:
+    maas_rabbitmq_password: "{{ lookup('password', '/dev/null length=16 chars=ascii_letters,digits') }}"
+  tags:
+    - gen_maas_vars
+    - gen_maas_config
+
+
+- name: Generate random string for maas_rabbitmq_password
+  set_fact:
+    maas_swift_accesscheck_password: "{{ lookup('password', '/dev/null length=16 chars=ascii_letters,digits') }}"
+  tags:
+    - gen_maas_vars
+    - gen_maas_config
+
