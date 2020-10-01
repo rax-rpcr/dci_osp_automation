@@ -24,5 +24,6 @@
   shell: |
     . /home/stack/stackrc
     ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /usr/bin/tripleo-ansible-inventory /home/stack/playbooks/uninstall_rpc_maas.yml
+  become: false
   tags:
     - run_uninstall_playbook
